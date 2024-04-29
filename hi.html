@@ -16,8 +16,7 @@
     <div class="container flex flex-col nowrap gap-2
                 p-8 h-full m-auto">
         <header class="flex flex-col md:flex-row justify-between md:items-end">
-            <h1 class="flex-none text-2xl font-bold">0x08 :
-                2D Animations (Project)</h1>
+            <h1 class="flex-none text-2xl font-bold">Paint Ball</h1>
             <p class="md:text-right text-xs md:text-sm" id="by"></p>
         </header>
         <div class="flex-1 flex flex-col lg:flex-row
@@ -25,60 +24,22 @@
             <main class="experiment flex-1 flex flex-col gap-2">
                 <div class="flex-1 relative">
                     <!-- <canvas id="myCanvas" width="10" height="1" class=" bg-slate-100 w-full h-full"></canvas> -->
-
-
                     <div id="mainContainer">
-
                         <!-- Canvas Area to Draw Objects -->
-                
                         <canvas id="myCanvas"></canvas>
-                
                         <canvas id="animCanvas"></canvas>
-                
-                        <!-- Player Name and Score  -->
-                
-                        <h1 id="playername"></h1>
-                
                         <h1 id="score">0</h1> 
-                
                         <!-- Number of Arrows and Timer Zone -->
-                
                         <div id="showPoint">
                             <div id="timerDiv"></div>
                             <p id="arrs">&uarr;</p><span class="u">&uarr; +4</span>
-                        </div> 
-                
+                        </div>
                         <!-- Entry Page  -->
-                
                         <div id="entrypage">
-                            <h1 id="title"><span style="font-size:60px">A</span>RCHERY<br><span style="font-size:60px">G</span>AME</h1>
-                            <br><br>
-                            <h1 id="best">0</h1>
-                            <br><br>
-                            <div id="rules">
-                                <h2>1.Total 5 arrows would be provided</h2>
-                                <h2>2.A timer of 6 seconds for arrow</h2>
-                                <h2>3.Zero score if arrow doesn't hit the board</h2>
-                                <h2>4.Hit closer to the centre of the board for higher score</h2>
-                                <h2>5.The arch board will oscillate after a score of 30 is achieved</h2>
-                                <h2>6.Final score would be sum total of all chances</h2>
-                            </div>
-                            <input type="text" id="username" placeholder="ENTER YOUR NAME">
-                            <br><br>
-                            <select id="opt">
-                                <option>Select Theme</option>
-                                <option>Basic</option>
-                                <option>Summer</option>
-                                <option>Winter</option>
-                            </select>
-                            <br><br>
                             <button id="startbtn">TAP TO START</button>
                             <h1 id="Score">0</h1>
-                        </div>
-                
+                        </div>                
                     </div>
-
-
                     <div class="absolute top-0 right-0 text-center">
                         <a class="cursor-pointer block p-2
                         text-blue-300 hover:text-blue-500
