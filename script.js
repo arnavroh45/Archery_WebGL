@@ -79,11 +79,13 @@ window.onload = function(){
             if(scr >= 7) uScore.innerHTML = "&uarr; +"+scr;
             else uScore.innerHTML = "+"+scr;
             updateArrows(arrNum);
+            
             var t = 50, l = 70, o = 1;
             var animIntv = setInterval(function(){
                 uScore.style.top = t + "%";
                 uScore.style.left = l + "%";
                 uScore.style.opacity = o;
+                uScore.style.color = "white";
                 t-=4;
                 l-=3;
                 o-=0.1;
@@ -213,21 +215,74 @@ window.onload = function(){
         //Define The Maximum Number of Arrows
         var boardY;
         var boardMove = false;
-        var totalArr = 5;
-        updateArrows(totalArr);
+
+        //Two Arrows would be used :
+        //Once an arrow goes to strike the board the other arrow appears in bow
+       
+        
+        //Count of how many arrows have been used
+        var arrows = 0;
+
+        //Is the arrow moving
+        var moveArrowCheck = false;
+
+        var score = 0;
+        const bullets = [];
+
+        const gun = {
+          x: 250, // x-coordinate of the gun
+          y: h / 2, // y-coordinate of the gun
+          width: 30, // width of the gun
+          height: 10, // height of the gun
+          angle: 0, // angle of the gun (in radians)
+          color: 'white', // color of the gun
+          lineWidth: 5, // line width of the gun
+          dy: 4
+        };
+        const gunnob = {
+          x: gun.x, // x-coordinate of the gun
+          y: gun.y+10, // y-coordinate of the gun
+          width: 15, // width of the gun
+          height: 5, // height of the gun
+          angle: 0, // angle of the gun (in radians)
+          color: 'white', // color of the gun
+          lineWidth: 5, // line width of the gun
+          dy: 4
+        };
+        const bulletProps = {
+        radius: 5, // Radius of the bullet
+        speed: 10, // Speed of the bullet
+        color: 'red', // Color of the bullet
+        };
+        const bullet = {
+        x: gun.x + gun.width / 2, // Start x-coordinate of the bullet
+        y: gun.y, // Start y-coordinate of the bullet
+        dx: Math.cos(gun.angle) * bulletProps.speed, // Horizontal speed of the bullet
+        dy: Math.sin(gun.angle) * bulletProps.speed, // Vertical speed of the bullet
+        radius: bulletProps.radius, // Radius of the bullet
+        color: bulletProps.color, // Color of the bullet
+        };
+        var arrow1 = new Arrow();
+        var arrow2 = new Arrow();
+
+        var bullets1 = 0;
+
+        var totalbullets = 4;
+        updateArrows(totalbullets);
 
         //Function for drawing the board
         function drawBoard() {
             ctx.beginPath();
-            ctx.fillRect(board.x,board.y-5,40,board.width+3);
-            ctx.fillRect(board.x,board.y-board.height/2,board.width,board.height);
+            ctx.fillStyle='red';
+            ctx.fillRect(board.x,board.y-5,40,board.width+3); //rectangle along with board width, height
+            ctx.fillRect(board.x,board.y-board.height/2,board.width,board.height); //main rectangle
             ctx.moveTo(board.x,board.y-15);
             ctx.quadraticCurveTo(board.x-10,board.y,board.x,board.y+15);
             //ctx.lineTo(10,6);
             ctx.fillStyle = "#36e";
             ctx.fill();
             ctx.closePath();
-            ctx.fillStyle = "#000";
+            // ctx.fillStyle = "#000";
         
             if(board.y >= h || board.y <= 0){
                 board.dy *= -1;
@@ -235,26 +290,26 @@ window.onload = function(){
         
             if(autoMove){
                 board.y += board.dy;
-                if(checkArrowMoveWithBoard1){
-                    arrow1.moveArrowWithBoard(1);
-                }
-                else if(checkArrowMoveWithBoard2){
-                    arrow2.moveArrowWithBoard(1);
-                }
+                // if(checkArrowMoveWithBoard1){
+                //     arrow1.moveArrowWithBoard(1);
+                // }
+                // else if(checkArrowMoveWithBoard2){
+                //     arrow2.moveArrowWithBoard(1);
+                // }
             }
             else{
                 if(boardMove){
-                    if(Math.abs(board.y - boardY) > 5){
+                    if(Math.abs(board.y - boardY) > 0){
                         board.y += board.dy;
-                        arrow1.moveArrowWithBoard(1);
-                        arrow2.moveArrowWithBoard(1);
+                        // arrow1.moveArrowWithBoard(1);
+                        // arrow2.moveArrowWithBoard(1);
                     }
                 }
                 else{
-                    if(Math.abs(board.y - boardY) > 5){
+                    if(Math.abs(board.y - boardY) > 0){
                         board.y -= board.dy;
-                        arrow1.moveArrowWithBoard(-1);
-                        arrow2.moveArrowWithBoard(-1);
+                        // arrow1.moveArrowWithBoard(-1);
+                        // arrow2.moveArrowWithBoard(-1);
                     }
                 }
             }
@@ -262,66 +317,57 @@ window.onload = function(){
     
         //Draw Arrow and Define functionality
         function Arrow(){
-            this.radius = 10; // Radius of the ball
-            this.x = arc.x - 25; // Initial x-coordinate
-            this.y = arc.y; // Initial y-coordinate
-            this.dx = 20; // Horizontal speed
-            this.dy = 0; // Initial vertical speed
-            this.status = true; // Flag to indicate if the ball is in motion
+            this.x= gun.x + gun.width / 2, // Start x-coordinate of the bullet
+            this.y= gun.y, // Start y-coordinate of the bullet
+            this.dx= Math.cos(gun.angle) * bulletProps.speed, // Horizontal speed of the bullet
+            this.dy= Math.sin(gun.angle) * bulletProps.speed, // Vertical speed of the bullet
+            this.radius= bulletProps.radius, // Radius of the bullet
+            this.color= bulletProps.color, // Color of the bullet
+            this.status = false; // Flag to indicate if the ball is in motion
             this.vis = true; // Flag to indicate if the ball is visible
         }
     
         Arrow.prototype.drawArrow = function() {
             if(this.vis) {
-                if(this.status) {
-                    ctx.fillRect(this.x,this.fy-3,10,6);
-                    ctx.fillRect(this.x,this.fy-1,this.w,2);
+                if(this.status) {   
                     ctx.beginPath();
-                    ctx.moveTo(this.x+this.w,this.fy-4);
-                    ctx.lineTo(this.x+this.w+12,this.fy);
-                    ctx.lineTo(this.x+this.w,this.fy+4);
+                    ctx.arc(this.x+this.dx, this.y+this.dy, this.radius, 0, 2 * Math.PI);
+                    ctx.fillStyle = this.color;
                     ctx.fill();
-                
+
                     if(moveArrowCheck) {
                         if(this.x < w-155){
                             this.x += this.dx;
                         }
                         else {
-                            if(!(this.fy <= board.y-board.height/2 || this.fy >= board.y+board.height/2) || this.x > w){
-                                if(this.x > w-110){
-                                    if(this == arrow1){
-                                        arrow2.vis = true;
-                                        checkArrowMoveWithBoard1 = true;
-                                        checkArrowMoveWithBoard2 = false;
-                                    }
-                                    else {
-                                        arrow1.vis = true;
-                                        checkArrowMoveWithBoard1 = false;
-                                        checkArrowMoveWithBoard2 = true;
-                                    }
+                            if(!(this.y <= board.y-board.height/2 || this.y >= board.y+board.height/2) || this.x > w){
+                                    if(this.x > w-62){
+                                        if(this == arrow1){
+                                            arrow2.vis = true;
+                                        }
+                                        else {
+                                            arrow1.vis = true;
+                                        }
                                     moveArrowCheck = false;
                                     score++;
-                                    if(score === 4){
-                                        arc.dy = 5;
-                                    }
-                            
-                                    if(this.fy >= board.y-board.height/2 && this.fy <= board.y+board.height/2) {
-                                        var scores = this.fy - board.y;
-                                        var currentScore = Math.round(board.height/20)-Math.round(Math.abs(scores/10));
+                                    if(this.y >= board.y-board.height/2 && this.y <= board.y+board.height/2) {
+                                        var scores = Math.abs(this.y - board.y);
+                                        var currentScore = Math.round(board.height/15)-Math.round(Math.abs(scores/10));
                                         if(currentScore >= 7){
                                             newF();
-                                            totalArr+=2;
+                                            totalbullets+=2;
                                         }
                                         else if(currentScore>=6){
-                                            totalArr+=1;
-                                        }
-                                
+                                            totalbullets+=1;
+                                        }             
+                                        this.color= 'black'
+                                        this.y = board.y                 
                                         totalScore += currentScore;
-                                        gameScore.innerHTML = totalScore;
-                                    
-                                        animateScore(currentScore,totalArr);
-                                    
-                                        boardY = board.y + scores;
+                                        gameScore.innerHTML = totalScore;                                    
+                                        animateScore(currentScore,totalbullets);
+                                        
+                                        boardY = board.y + 1;
+                                        
                                         if(scores>=0){
                                             boardMove = true;
                                         }
@@ -331,16 +377,15 @@ window.onload = function(){
  
                                     }
                                     else{
-                                        updateArrows(totalArr);
+                                        updateArrows(totalbullets);
                                     }
 
                                     if(totalScore >= 30){
                                         autoMove = true;
                                     }
 
-                                    if(totalArr <= 0){
+                                    if(totalbullets <= 0){
                                         clearInterval(intv);
-                                        // document.body.style.backgroundImage = "url('Img2.jpg')";
                                         document.getElementById("animCanvas").removeEventListener("click",shoot);
                                         document.body.removeEventListener("keydown",shoot);
                                         entrypage.style.display = "block";
@@ -355,7 +400,6 @@ window.onload = function(){
                                         }
                                         $('#best').show()
                                         document.getElementById("score").innerHTML = 0;
-                                        document.getElementById("best").innerHTML = "Best Score : " + bestScore;
                                     }
                                 }
                                 else {
@@ -369,13 +413,11 @@ window.onload = function(){
                     }
                 }
                 else {
-                    ctx.fillRect(gun.x,arc.y-3,10,6);
-                    ctx.fillRect(gun.x,arc.y-1,this.w,2);
                     ctx.beginPath();
-                    ctx.moveTo(gun.x+this.w,arc.y-4);
-                    ctx.lineTo(gun.x+this.w+12,arc.y);
-                    ctx.lineTo(gun.x+this.w,arc.y+4);
+                    ctx.arc(gun.x + gun.width / 2, gun.y-3, this.radius, 0, 2 * Math.PI);
+                    ctx.fillStyle = this.color;
                     ctx.fill();
+                    this.color='red'
                 }
             }
         }
@@ -383,56 +425,12 @@ window.onload = function(){
         // Arrow Move With Board
         Arrow.prototype.moveArrowWithBoard = function(dir) {
             if(this == arrow1){
-                arrow1.fy += board.dy*dir;
+                arrow1.y += board.dy*dir;
             }
             else {
-                arrow2.fy += board.dy*dir;
+                arrow2.y += board.dy*dir;
             }
         }
-
-        //Two Arrows would be used :
-        //Once an arrow goes to strike the board the other arrow appears in bow
-        var arrow1 = new Arrow();
-        var arrow2 = new Arrow();
-        
-        //Count of how many arrows have been used
-        var arrows = 0;
-
-        //Is the arrow moving
-        var moveArrowCheck = false;
-
-        var score = 0;
-        const bullets = [];
-
-        const bulletProps = {
-            radius: 5, // Radius of the bullet
-            speed: 10, // Speed of the bullet
-            color: 'red', // Color of the bullet
-          };
-
-          const gun = {
-            x: 250, // x-coordinate of the gun
-            y: h / 2, // y-coordinate of the gun
-            width: 30, // width of the gun
-            height: 10, // height of the gun
-            angle: 0, // angle of the gun (in radians)
-            color: 'white', // color of the gun
-            lineWidth: 5, // line width of the gun
-            dy: 4
-          };
-
-          const gunnob = {
-            x: gun.x, // x-coordinate of the gun
-            y: gun.y+10, // y-coordinate of the gun
-            width: 15, // width of the gun
-            height: 5, // height of the gun
-            angle: 0, // angle of the gun (in radians)
-            color: 'white', // color of the gun
-            lineWidth: 5, // line width of the gun
-            dy: 4
-          };
-
-
     
         //Functions for Drawing Items :
         //  1) Draw Board
@@ -481,6 +479,7 @@ window.onload = function(){
           }
 
         function drawBullets() {
+            console.log(bullets.length)
             bullets.forEach((bullet, index) => {
               // Move the bullet
               bullet.x += bullet.dx;
@@ -553,29 +552,39 @@ window.onload = function(){
             ctx.closePath();
           }
 
-        //Arrow Moving function...
+        //Board Moving function...
         function move (){
             ctx.clearRect(0,0,w,h);
             if (board.y > h - 50 || board.y < 50) {
                 board.dy *= -1; // Reverse the vertical direction
               }
-              board.y += board.dy; // Update the gun's vertical position
-            //   gunnob.y += gun.dy; // Update the gun's vertical position
+              board.y += board.dy; // Update the board's vertical position
+            //   gunnob.y += gun.dy; // Update the board's vertical position
         }
       
         //Arrow Shooting Function
         function shoot(){
-            const bullet = {
-                x: gun.x + gun.width / 2, // Start x-coordinate of the bullet
-                y: gun.y, // Start y-coordinate of the bullet
-                dx: Math.cos(gun.angle) * bulletProps.speed, // Horizontal speed of the bullet
-                dy: Math.sin(gun.angle) * bulletProps.speed, // Vertical speed of the bullet
-                radius: bulletProps.radius, // Radius of the bullet
-                color: bulletProps.color, // Color of the bullet
-              };
-            
-              // Add the new bullet to the bullets array
-              bullets.push(bullet);
+            if(arrow1.vis && arrow2.vis && bullets1 != -1){
+                moveArrowCheck = true;
+                clearTimeout(countTimeOut);
+                countTime();
+                if(bullets1%2===0){
+                    arrow1.status = true;
+                    arrow1.y = gun.y;
+                    arrow2.status = false;
+                    arrow2.x = gun.x;
+                    arrow2.vis = false;
+                }
+                else{
+                    arrow1.status = false;
+                    arrow2.y = gun.y;
+                    arrow2.status = true;
+                    arrow1.x = gun.x;
+                    arrow1.vis = false;
+                }
+            totalbullets--;
+            }
+            bullets1++;
         }
         
         //On any key stroke, call the shoot arrow function
@@ -590,11 +599,8 @@ window.onload = function(){
         var intv = setInterval(function(){
             move();
             createShootingRange();
-            //   drawArc();
-            // drawRope();
             drawGun();
             drawGunnob();
-            drawBullets();
             arrow1.drawArrow();
             arrow2.drawArrow();
             drawBoard();
