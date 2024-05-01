@@ -1,3 +1,10 @@
+const clouds=[];
+const maxClouds= 6;
+const cloudSpeed= 0.4;
+const cloudHeight = 500;
+const cloudWidth = 150;
+
+
 //Excute once the window is loaded
 window.onload = function(){
 
@@ -15,8 +22,18 @@ window.onload = function(){
     start_btn.addEventListener("click",function(){
         console.log("Clicked")
         startGame()
+        generateClouds()
     });
 
+    function generateClouds() {
+        for (let i = 0; i < maxClouds; i++) {
+            clouds.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * (canvas.height - cloudHeight),
+                size: Math.random() * 50 + 50 // Random cloud size
+            });
+        }
+    }
 
     //Define the startGame function
     function startGame(){
@@ -67,7 +84,7 @@ window.onload = function(){
         
         //Function to update the number of bullets
         function updateBullets(number_of_bullets){
-            var arr = "&uarr;";
+            var arr = "&#10050;";
             arr = arr.repeat(number_of_bullets);
             arrs.innerHTML = arr;
         }
@@ -180,7 +197,7 @@ window.onload = function(){
         var board = {
             x:w-40,
             y:h/2,
-            dy:4,
+            dy:3,
             height:150,
             width:7
         }
@@ -192,42 +209,42 @@ window.onload = function(){
         var score = 0;  
 
         // GUN
-        const gun = {
-          x: 250, // x-coordinate of the gun
-          y: h / 2, // y-coordinate of the gun
-          width: 30, // width of the gun
-          height: 10, // height of the gun
-          angle: 0, // angle of the gun (in radians)
-          color: 'white', // color of the gun
-          lineWidth: 5, // line width of the gun
-          dy: 4
-        };
+        // const gun = {
+        //   x: 250, // x-coordinate of the gun
+        //   y: h / 2, // y-coordinate of the gun
+        //   width: 30, // width of the gun
+        //   height: 10, // height of the gun
+        //   angle: 0, // angle of the gun (in radians)
+        //   color: 'white', // color of the gun
+        //   lineWidth: 5, // line width of the gun
+        //   dy: 4
+        // };
 
-        //Gun trigger
-        const gunnob = {
-          x: gun.x, // x-coordinate of the gun
-          y: gun.y+10, // y-coordinate of the gun
-          width: 15, // width of the gun
-          height: 5, // height of the gun
-          angle: 0, // angle of the gun (in radians)
-          color: 'white', // color of the gun
-          lineWidth: 5, // line width of the gun
-          dy: 4
-        };
+        // //Gun trigger
+        // const gunnob = {
+        //   x: gun.x, // x-coordinate of the gun
+        //   y: gun.y+10, // y-coordinate of the gun
+        //   width: 15, // width of the gun
+        //   height: 5, // height of the gun
+        //   angle: 0, // angle of the gun (in radians)
+        //   color: 'white', // color of the gun
+        //   lineWidth: 5, // line width of the gun
+        //   dy: 4
+        // };
 
         //Bullets 
         const bulletProps = {
         radius: 5, // Radius of the bullet
-        speed: 10, // Speed of the bullet
+        speed: 20, // Speed of the bullet
         color: 'red', // Color of the bullet
         };
 
         // Bullet initilizations
         const bullet = {
-        x: gun.x + gun.width / 2, // Start x-coordinate of the bullet
-        y: gun.y, // Start y-coordinate of the bullet
-        dx: Math.cos(gun.angle) * bulletProps.speed, // Horizontal speed of the bullet
-        dy: Math.sin(gun.angle) * bulletProps.speed, // Vertical speed of the bullet
+        x: 402, // Start x-coordinate of the bullet
+        y: 390, // Start y-coordinate of the bullet
+        dx: Math.cos(0) * bulletProps.speed, // Horizontal speed of the bullet
+        dy: Math.sin(0) * bulletProps.speed, // Vertical speed of the bullet
         radius: bulletProps.radius, // Radius of the bullet
         color: bulletProps.color, // Color of the bullet
         };
@@ -246,12 +263,12 @@ window.onload = function(){
         //Function for drawing the board
         function drawBoard() {
             ctx.beginPath();
-            ctx.fillStyle='red';
+            ctx.fillStyle='black';
             ctx.fillRect(board.x,board.y-5,40,board.width+3); //rectangle right side to the main rectangle board width, height
             ctx.fillRect(board.x,board.y-board.height/2,board.width,board.height); //main rectangle
             ctx.moveTo(board.x,board.y-15);
             ctx.quadraticCurveTo(board.x-10,board.y,board.x,board.y+15); //blue curve
-            ctx.fillStyle = "#36e";
+            ctx.fillStyle = 'white';
             ctx.fill();
             ctx.closePath();
         
@@ -278,10 +295,10 @@ window.onload = function(){
     
         //Draw Bullets
         function Bullet(){
-            this.x= gun.x + gun.width / 2, // Start x-coordinate of the bullet
-            this.y= gun.y, // Start y-coordinate of the bullet
-            this.dx= Math.cos(gun.angle) * bulletProps.speed, // Horizontal speed of the bullet
-            this.dy= Math.sin(gun.angle) * bulletProps.speed, // Vertical speed of the bullet
+            this.x= 402, // Start x-coordinate of the bullet
+            this.y= 390, // Start y-coordinate of the bullet
+            this.dx= Math.cos(0) * bulletProps.speed, // Horizontal speed of the bullet
+            this.dy= Math.sin(0) * bulletProps.speed, // Vertical speed of the bullet
             this.radius= bulletProps.radius, // Radius of the bullet
             this.color= bulletProps.color, // Color of the bullet
             this.status = false; // Flag to indicate if the ball is in motion
@@ -321,7 +338,7 @@ window.onload = function(){
                                         else if(currentScore>=6){
                                             totalbullets+=1;
                                         }             
-                                        this.color= 'black'
+                                        this.color= '#87CEEB'
                                         this.y = board.y                 
                                         totalScore += currentScore;
                                         gameScore.innerHTML = totalScore;                                    
@@ -354,7 +371,7 @@ window.onload = function(){
                                         $('#animCanvas').hide();
                                         $('#showPoint').hide();
                                         $('#score').hide();
-                                        document.getElementById("title").innerHTML = "Your Score<br>"+totalScore;
+                                        document.getElementById("title").innerHTML = "Your Score<br><br><br>"+totalScore;
                                     }
                                 }
                                 else {
@@ -369,7 +386,7 @@ window.onload = function(){
                 }
                 else {
                     ctx.beginPath();
-                    ctx.arc(gun.x + gun.width / 2, gun.y-3, this.radius, 0, 2 * Math.PI);
+                    ctx.arc(402, 390-3, this.radius, 0, 2 * Math.PI);
                     ctx.fillStyle = this.color;
                     ctx.fill();
                     this.color='red'
@@ -388,13 +405,10 @@ window.onload = function(){
         }
     
         //Functions for Drawing Items :
-        //  1) Draw Board
-        //  2) Draw Arc
-        //  3) Draw Rope
 
         function createShootingRange() {
             // Create the background
-            ctx.fillStyle = '#000000'; // Sky blue color
+            ctx.fillStyle = '#87CEEB'; // Sky blue color--VistaCreate
             ctx.fillRect(0, 0, canvas.width, canvas.height);
           
             // Create the ground
@@ -408,60 +422,175 @@ window.onload = function(){
             ctx.stroke();
           
             // Draw the sun
-            drawSun(canvas.width - 100, 100);
+            drawSun(canvas.width - 150, 150);
 
-            //Draw Lamppost
-            drawLampPost(120, canvas.height);
+            drawClouds();
+            moveClouds();
+
+            ctx.strokeStyle = "#8b4513";
+            drawTree(150, 750, 250, 0, 20);
+            drawTree(450, 750, 270, 0, 20); 
+            drawTree(750, 750, 260, 0, 20); 
+
           }
 
-          // Function to Draw the stand
-          function drawLampPost(x, y) {
-            ctx.fillRect(x-20, y-250, 20, 250);
-          
-            // Draw the bulb
-            ctx.beginPath();
-            ctx.arc(x-12, y - 280, 30, 0, 2 * Math.PI);
-            ctx.fillStyle = 'white';
-            ctx.fill();
-            ctx.closePath();
-          }
 
           //Function to draw the sun
           function drawSun(x, y) {
             ctx.beginPath();
             ctx.arc(x, y, 50, 0, 2 * Math.PI);
-            ctx.fillStyle = 'white';
+            ctx.fillStyle = '#FDB813';
             ctx.fill();
             ctx.closePath();
           }
 
-        // Function to Draw the Gun
-        function drawGun() {
-            ctx.beginPath();
-            ctx.save(); // Save the current canvas state
-            ctx.translate(gun.x + gun.width / 2, gun.y); // Translate to the center of the gun
-            ctx.rotate(gun.angle); // Rotate the gun
-            ctx.rect(-gun.width / 2, -gun.height / 2, gun.width, gun.height); // Draw the gun
-            ctx.strokeStyle = gun.color;
-            ctx.lineWidth = gun.lineWidth;
-            ctx.stroke();
-            ctx.restore(); // Restore the canvas state
-            ctx.closePath();
-          }
 
-          //Function to draw the trigger
-          function drawGunnob() {
+            function drawTree(startX, startY, length, angle, branchWidth) {
+                ctx.beginPath();
+                ctx.save();
+                ctx.translate(startX, startY);
+                ctx.rotate(angle * Math.PI / 180);
+                ctx.moveTo(0, 0);
+                ctx.lineWidth = branchWidth;
+    
+                // Draw the branch
+                ctx.lineTo(0, -length);
+                ctx.stroke();
+    
+                // Exit condition for recursion
+                if (length < 10) {
+                    // Draw leaves
+                    ctx.beginPath();
+                    ctx.arc(0, -length - 10, 15, 0, Math.PI * 2);
+                    ctx.fillStyle = "green";
+                    ctx.fill();
+                    ctx.restore();
+                    return;
+                }
+    
+                // Recursive call for sub-branches
+                drawTree(0, -length, length * 0.7, -20, branchWidth * 0.8);
+                drawTree(0, -length, length * 0.7, 20, branchWidth * 0.8);
+    
+                ctx.restore();
+            }            
+
+        function drawClouds() {
+
+            for (let i = 0; i < clouds.length; i++) {
+                const cloudGradient = ctx.createRadialGradient(
+                    clouds[i].x, clouds[i].y, 0,
+                    clouds[i].x, clouds[i].y, clouds[i].size
+                );
+                cloudGradient.addColorStop(0, 'white');
+                cloudGradient.addColorStop(1, 'lightgray');
+        
+                ctx.fillStyle = cloudGradient;
+                ctx.beginPath();
+                // Draw the main ellipse
+                ctx.ellipse(clouds[i].x, clouds[i].y, clouds[i].size, clouds[i].size / 2, 0, 0, Math.PI * 2);
+                
+                // Draw a smaller ellipse
+                ctx.ellipse(clouds[i].x, clouds[i].y, clouds[i].size * 0.8, clouds[i].size * 0.4, 0, 0, Math.PI * 2);
+        
+                // Draw circles around the larger ellipse
+                const numCircles = 6;
+                const circleRadius = clouds[i].size * 0.3;
+                for (let j = 0; j < numCircles; j++) {
+                    const angle = (j / numCircles) * Math.PI * 2;
+                    const x = clouds[i].x + Math.cos(angle) * circleRadius;
+                    const y = clouds[i].y + Math.sin(angle) * circleRadius;
+                    const distanceX = Math.abs(x - clouds[i].x) / (clouds[i].size * 0.6);
+                    const distanceY = Math.abs(y - clouds[i].y) / (clouds[i].size * 0.2);
+                    const diameter = (distanceX > distanceY) ? clouds[i].size * 0.8 : clouds[i].size;
+                    ctx.moveTo(x +diameter , y);
+                    ctx.arc(x, y, diameter / 2, 0, Math.PI * 2);
+                }
+        
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+
+        function moveClouds() {
+            for (let i = 0; i < clouds.length; i++) {
+                clouds[i].x += cloudSpeed;
+                if (clouds[i].x + cloudWidth < 0) { // Check if the endmost point of the cloud is outside the canvas
+                    clouds[i].x = canvas.width; // Reset the cloud position to the right side of the canvas
+                    clouds[i].y = Math.random() * (canvas.height - cloudHeight);
+                }
+                if (clouds[i].x - clouds[i].size > canvas.width) { // Check if the endmost point of the cloud has reached the canvas width
+                    clouds[i].x = -cloudWidth; // Reset the cloud position to the left side of the canvas
+                    clouds[i].y = Math.random() * (canvas.height - cloudHeight);
+                }
+            }
+        }
+
+        function drawGun(){
             ctx.beginPath();
-            ctx.save(); // Save the current canvas state
-            ctx.translate(gunnob.x + gunnob.width / 2, gunnob.y); // Translate to the center of the gun
-            ctx.rotate(gunnob.angle); // Rotate the gun
-            ctx.rect(-gunnob.width / 2, -gunnob.height / 2, gunnob.width, gunnob.height); // Draw the gun
-            ctx.strokeStyle = gunnob.color;
-            ctx.lineWidth = gunnob.lineWidth;
-            ctx.stroke();
-            ctx.restore(); // Restore the canvas state
+            ctx.moveTo(320,380);
+            ctx.fillStyle = '#333333';
+            ctx.fillRect(320,380,80,20);
+            ctx.moveTo(400,380);
+            ctx.lineTo(406,379);
+            ctx.lineTo(406,401);
+            ctx.lineTo(400,400);
             ctx.closePath();
-          }
+            ctx.fillStyle = '#333333';
+            ctx.fill();
+            ctx.fillStyle = '#333333';
+            ctx.fillRect(394,380,4,-2);
+
+            ctx.beginPath();
+            ctx.moveTo(320,380);
+            ctx.lineTo(300,380);
+            ctx.lineTo(300,408);
+            ctx.lineTo(316,408);
+            ctx.lineTo(320,402);
+            ctx.lineTo(320,400);
+            ctx.closePath();
+            ctx.fillStyle = '#333333';
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(300,394,14,-Math.PI,Math.PI);
+            ctx.fillStyle = '#333333';
+            ctx.fill();
+
+            ctx.fillStyle = '#808080';
+            ctx.fillRect(300,390,9,6);
+
+            ctx.beginPath();
+            ctx.moveTo(300,380);
+            ctx.lineTo(290,376);
+            ctx.lineTo(290.5,381);
+            ctx.closePath();
+            ctx.fillStyle = '#333333';
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.moveTo(300,380);
+            ctx.lineTo(271,402);
+            ctx.lineTo(267,394);
+            ctx.lineTo(233,394);
+            ctx.lineTo(233,428);
+            ctx.lineTo(250,427);
+            ctx.lineTo(300,408);
+            ctx.closePath();
+            ctx.fillStyle = '#333333';
+            ctx.fill();
+
+            ctx.strokeStyle = '#333333';
+            ctx.strokeRect(309,408,-24,6);
+
+
+            ctx.beginPath();
+            ctx.moveTo(300,408);
+            ctx.lineTo(302,411);
+            ctx.closePath();
+            ctx.fillStyle = '#333333';
+            ctx.stroke();
+        }
 
         //Board Moving function...
         function move (){
@@ -481,16 +610,16 @@ window.onload = function(){
                 countTime();
                 if(bullets1%2===0){
                     bullet1.status = true;
-                    bullet1.y = gun.y;
+                    bullet1.y = 390;
                     bullet2.status = false;
-                    bullet2.x = gun.x;
+                    bullet2.x = 402;
                     bullet2.vis = false;
                 }
                 else{
                     bullet1.status = false;
-                    bullet2.y = gun.y;
+                    bullet2.y = 390;
                     bullet2.status = true;
-                    bullet1.x = gun.x;
+                    bullet1.x = 402;
                     bullet1.vis = false;
                 }
             totalbullets--;
@@ -510,10 +639,10 @@ window.onload = function(){
         var intv = setInterval(function(){
             move();
             createShootingRange();
-            drawGun();
-            drawGunnob();
+            
             bullet1.drawBullet();
             bullet2.drawBullet();
+            drawGun();
             drawBoard();
         },15)
     }
