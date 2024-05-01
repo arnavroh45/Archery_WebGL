@@ -32,13 +32,11 @@ window.onload = function(){
         StartGame_Helper();
     }
     
-    //Variable to keep track of the best score
-    var bestScore = 0;
     
     //Define the startGame Helper function
     function StartGame_Helper(){
 
-        //Set the Timer for 6 secs for an arrow
+        //Set the Timer for 6 secs for a bullet
         var countTimeOut;
         function countTime(){
             var container = document.getElementById("timerDiv");
@@ -68,17 +66,17 @@ window.onload = function(){
         var arrs = document.getElementById("arrs");
         
         //Function to update the number of arrows
-        function updateArrows(number_of_arrows){
+        function updateBullets(number_of_arrows){
             var arr = "&uarr;";
             arr = arr.repeat(number_of_arrows);
             arrs.innerHTML = arr;
         }
 
-        //Function to animate the score 
+        //Function to animate the score(the animation after target is hit)
         function animateScore(scr,arrNum){
             if(scr >= 7) uScore.innerHTML = "&uarr; +"+scr;
             else uScore.innerHTML = "+"+scr;
-            updateArrows(arrNum);
+            updateBullets(arrNum);
             
             var t = 50, l = 70, o = 1;
             var animIntv = setInterval(function(){
@@ -104,7 +102,7 @@ window.onload = function(){
         c2.width = w;
         var ctx2 = c2.getContext("2d");
 
-        //Build a prototype for FireWorks Animation
+        //Build a prototype for FireWorks Animation (Fireworks when they hit bullseye)
         var fwBuilder = function(n,x,y,speed){
             this.n = n;
             this.x = x;
@@ -175,35 +173,10 @@ window.onload = function(){
         c.height = h;
         c.width = w;
         var ctx = c.getContext("2d");
-        var checkArrowMoveWithBoard1 = false;
-        var checkArrowMoveWithBoard2 = false;
+        var checkBulletMoveWithBoard1 = false;
+        var checkBulletMoveWithBoard2 = false;
 
-        // Objects :   1)  Arc
-        //             2)  Rope
-        //             3)  Board
-
-        //this can be replaced by gun 
-        var arc = {
-            x:30,
-            y:100,
-            dy:3,
-            r:50,
-            color:"#000",
-            lw:3,
-            start:Math.PI+Math.PI/2,
-            end:Math.PI-Math.PI/2
-        }
-    
-        var rope = {
-            h:arc.r*2,
-              lw:1,
-              x:arc.x-25,
-              color:"#000",
-              status:true
-        }
-
-        // till here
-    
+        // target board
         var board = {
             x:w-40,
             y:h/2,
@@ -211,24 +184,14 @@ window.onload = function(){
             height:150,
             width:7
         }
-        
-        //Define The Maximum Number of Arrows
         var boardY;
         var boardMove = false;
 
-        //Two Arrows would be used :
-        //Once an arrow goes to strike the board the other arrow appears in bow
-       
-        
-        //Count of how many arrows have been used
-        var arrows = 0;
-
         //Is the arrow moving
-        var moveArrowCheck = false;
+        var moveBulletCheck = false;
+        var score = 0;  
 
-        var score = 0;
-        const bullets = [];
-
+        // GUN
         const gun = {
           x: 250, // x-coordinate of the gun
           y: h / 2, // y-coordinate of the gun
@@ -239,6 +202,8 @@ window.onload = function(){
           lineWidth: 5, // line width of the gun
           dy: 4
         };
+
+        //Gun trigger
         const gunnob = {
           x: gun.x, // x-coordinate of the gun
           y: gun.y+10, // y-coordinate of the gun
@@ -249,11 +214,15 @@ window.onload = function(){
           lineWidth: 5, // line width of the gun
           dy: 4
         };
+
+        //Bullets 
         const bulletProps = {
         radius: 5, // Radius of the bullet
         speed: 10, // Speed of the bullet
         color: 'red', // Color of the bullet
         };
+
+        // Bullet initilizations
         const bullet = {
         x: gun.x + gun.width / 2, // Start x-coordinate of the bullet
         y: gun.y, // Start y-coordinate of the bullet
@@ -262,27 +231,29 @@ window.onload = function(){
         radius: bulletProps.radius, // Radius of the bullet
         color: bulletProps.color, // Color of the bullet
         };
-        var arrow1 = new Arrow();
-        var arrow2 = new Arrow();
 
+
+        var arrow1 = new Bullet();
+        var arrow2 = new Bullet();
+
+        // initialization of bullets variable to keep count of bullets
         var bullets1 = 0;
 
+        // total bullets
         var totalbullets = 4;
-        updateArrows(totalbullets);
+        updateBullets(totalbullets);
 
         //Function for drawing the board
         function drawBoard() {
             ctx.beginPath();
             ctx.fillStyle='red';
-            ctx.fillRect(board.x,board.y-5,40,board.width+3); //rectangle along with board width, height
+            ctx.fillRect(board.x,board.y-5,40,board.width+3); //rectangle right side to the main rectangle board width, height
             ctx.fillRect(board.x,board.y-board.height/2,board.width,board.height); //main rectangle
             ctx.moveTo(board.x,board.y-15);
-            ctx.quadraticCurveTo(board.x-10,board.y,board.x,board.y+15);
-            //ctx.lineTo(10,6);
+            ctx.quadraticCurveTo(board.x-10,board.y,board.x,board.y+15); //blue curve
             ctx.fillStyle = "#36e";
             ctx.fill();
             ctx.closePath();
-            // ctx.fillStyle = "#000";
         
             if(board.y >= h || board.y <= 0){
                 board.dy *= -1;
@@ -290,33 +261,23 @@ window.onload = function(){
         
             if(autoMove){
                 board.y += board.dy;
-                // if(checkArrowMoveWithBoard1){
-                //     arrow1.moveArrowWithBoard(1);
-                // }
-                // else if(checkArrowMoveWithBoard2){
-                //     arrow2.moveArrowWithBoard(1);
-                // }
             }
             else{
                 if(boardMove){
                     if(Math.abs(board.y - boardY) > 0){
                         board.y += board.dy;
-                        // arrow1.moveArrowWithBoard(1);
-                        // arrow2.moveArrowWithBoard(1);
                     }
                 }
                 else{
                     if(Math.abs(board.y - boardY) > 0){
                         board.y -= board.dy;
-                        // arrow1.moveArrowWithBoard(-1);
-                        // arrow2.moveArrowWithBoard(-1);
                     }
                 }
             }
         }
     
-        //Draw Arrow and Define functionality
-        function Arrow(){
+        //Draw Bullets
+        function Bullet(){
             this.x= gun.x + gun.width / 2, // Start x-coordinate of the bullet
             this.y= gun.y, // Start y-coordinate of the bullet
             this.dx= Math.cos(gun.angle) * bulletProps.speed, // Horizontal speed of the bullet
@@ -327,7 +288,7 @@ window.onload = function(){
             this.vis = true; // Flag to indicate if the ball is visible
         }
     
-        Arrow.prototype.drawArrow = function() {
+        Bullet.prototype.drawBullet = function() {
             if(this.vis) {
                 if(this.status) {   
                     ctx.beginPath();
@@ -335,7 +296,7 @@ window.onload = function(){
                     ctx.fillStyle = this.color;
                     ctx.fill();
 
-                    if(moveArrowCheck) {
+                    if(moveBulletCheck) {
                         if(this.x < w-155){
                             this.x += this.dx;
                         }
@@ -348,7 +309,7 @@ window.onload = function(){
                                         else {
                                             arrow1.vis = true;
                                         }
-                                    moveArrowCheck = false;
+                                    moveBulletCheck = false;
                                     score++;
                                     if(this.y >= board.y-board.height/2 && this.y <= board.y+board.height/2) {
                                         var scores = Math.abs(this.y - board.y);
@@ -377,7 +338,7 @@ window.onload = function(){
  
                                     }
                                     else{
-                                        updateArrows(totalbullets);
+                                        updateBullets(totalbullets);
                                     }
 
                                     if(totalScore >= 30){
@@ -394,12 +355,6 @@ window.onload = function(){
                                         $('#showPoint').hide();
                                         $('#score').hide();
                                         document.getElementById("title").innerHTML = "Your Score<br>"+totalScore;
-                                        if(bestScore < totalScore){
-                                            bestScore = totalScore;
-                                            console.log(bestScore);
-                                        }
-                                        $('#best').show()
-                                        document.getElementById("score").innerHTML = 0;
                                     }
                                 }
                                 else {
@@ -422,8 +377,8 @@ window.onload = function(){
             }
         }
 
-        // Arrow Move With Board
-        Arrow.prototype.moveArrowWithBoard = function(dir) {
+        // Bullet Move With Board
+        Bullet.prototype.moveBulletWithBoard = function(dir) {
             if(this == arrow1){
                 arrow1.y += board.dy*dir;
             }
@@ -455,11 +410,12 @@ window.onload = function(){
             // Draw the sun
             drawSun(canvas.width - 100, 100);
 
+            //Draw Lamppost
             drawLampPost(120, canvas.height);
           }
 
+          // Function to Draw the stand
           function drawLampPost(x, y) {
-            // Draw the stand
             ctx.fillRect(x-20, y-250, 20, 250);
           
             // Draw the bulb
@@ -469,7 +425,8 @@ window.onload = function(){
             ctx.fill();
             ctx.closePath();
           }
-          
+
+          //Function to draw the sun
           function drawSun(x, y) {
             ctx.beginPath();
             ctx.arc(x, y, 50, 0, 2 * Math.PI);
@@ -478,54 +435,7 @@ window.onload = function(){
             ctx.closePath();
           }
 
-        function drawBullets() {
-            console.log(bullets.length)
-            bullets.forEach((bullet, index) => {
-              // Move the bullet
-              bullet.x += bullet.dx;
-              bullet.y += bullet.dy;
-          
-              // Draw the bullet
-              ctx.beginPath();
-              ctx.arc(bullet.x, bullet.y, bullet.radius, 0, 2 * Math.PI);
-              ctx.fillStyle = bullet.color;
-              ctx.fill();
-              ctx.closePath();
-          
-              // Remove bullets that go off-screen
-              if (
-                bullet.x < 0 ||
-                bullet.x > w ||
-                bullet.y < 0 ||
-                bullet.y > h
-              ) {
-                bullets.splice(index, 1);
-              }
-            });
-          }
-
-        function drawArc() {
-            ctx.beginPath();
-              ctx.arc(arc.x,arc.y,arc.r,arc.start,arc.end);
-              ctx.strokeStyle = arc.color;
-              ctx.lineWidth = arc.lw;
-              ctx.stroke();
-              ctx.closePath();
-        }
-    
-        function drawRope() {
-            ctx.beginPath();
-              ctx.moveTo(arc.x,arc.y-arc.r);
-              if(arrow1.vis && arrow2.vis){
-                ctx.lineTo(rope.x,arc.y);
-              }
-              ctx.lineTo(arc.x,arc.y+arc.r);
-              ctx.lineWidth = rope.lw;
-              ctx.strokeStyle = rope.color;
-              ctx.stroke();
-              ctx.closePath();
-        }
-
+        // Function to Draw the Gun
         function drawGun() {
             ctx.beginPath();
             ctx.save(); // Save the current canvas state
@@ -539,6 +449,7 @@ window.onload = function(){
             ctx.closePath();
           }
 
+          //Function to draw the trigger
           function drawGunnob() {
             ctx.beginPath();
             ctx.save(); // Save the current canvas state
@@ -562,10 +473,10 @@ window.onload = function(){
             //   gunnob.y += gun.dy; // Update the board's vertical position
         }
       
-        //Arrow Shooting Function
+        //Bullet Shooting Function
         function shoot(){
             if(arrow1.vis && arrow2.vis && bullets1 != -1){
-                moveArrowCheck = true;
+                moveBulletCheck = true;
                 clearTimeout(countTimeOut);
                 countTime();
                 if(bullets1%2===0){
@@ -587,10 +498,10 @@ window.onload = function(){
             bullets1++;
         }
         
-        //On any key stroke, call the shoot arrow function
+        //Use G to play, call the shoot Bullet function
         document.getElementById("animCanvas").addEventListener("click", shoot);
         document.body.addEventListener("keydown", function(event) {
-        if (event.code === "Space") {
+        if (event.key === "g" || event.key === "G") {
             shoot();
         }
         });
@@ -601,8 +512,8 @@ window.onload = function(){
             createShootingRange();
             drawGun();
             drawGunnob();
-            arrow1.drawArrow();
-            arrow2.drawArrow();
+            arrow1.drawBullet();
+            arrow2.drawBullet();
             drawBoard();
         },15)
     }
