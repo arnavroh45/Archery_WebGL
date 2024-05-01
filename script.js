@@ -61,14 +61,14 @@ window.onload = function(){
         updatePointArea.style.height = h+"px";
         updatePointArea.style.width = w+"px";
 
-        //Get the arrows display
+        //Get the bullets display
         var uScore = document.querySelector("#showPoint .u");
         var arrs = document.getElementById("arrs");
         
-        //Function to update the number of arrows
-        function updateBullets(number_of_arrows){
+        //Function to update the number of bullets
+        function updateBullets(number_of_bullets){
             var arr = "&uarr;";
-            arr = arr.repeat(number_of_arrows);
+            arr = arr.repeat(number_of_bullets);
             arrs.innerHTML = arr;
         }
 
@@ -187,7 +187,7 @@ window.onload = function(){
         var boardY;
         var boardMove = false;
 
-        //Is the arrow moving
+        //Is the bullet moving
         var moveBulletCheck = false;
         var score = 0;  
 
@@ -233,8 +233,8 @@ window.onload = function(){
         };
 
 
-        var arrow1 = new Bullet();
-        var arrow2 = new Bullet();
+        var bullet1 = new Bullet();
+        var bullet2 = new Bullet();
 
         // initialization of bullets variable to keep count of bullets
         var bullets1 = 0;
@@ -303,11 +303,11 @@ window.onload = function(){
                         else {
                             if(!(this.y <= board.y-board.height/2 || this.y >= board.y+board.height/2) || this.x > w){
                                     if(this.x > w-62){
-                                        if(this == arrow1){
-                                            arrow2.vis = true;
+                                        if(this == bullet1){
+                                            bullet2.vis = true;
                                         }
                                         else {
-                                            arrow1.vis = true;
+                                            bullet1.vis = true;
                                         }
                                     moveBulletCheck = false;
                                     score++;
@@ -379,11 +379,11 @@ window.onload = function(){
 
         // Bullet Move With Board
         Bullet.prototype.moveBulletWithBoard = function(dir) {
-            if(this == arrow1){
-                arrow1.y += board.dy*dir;
+            if(this == bullet1){
+                bullet1.y += board.dy*dir;
             }
             else {
-                arrow2.y += board.dy*dir;
+                bullet2.y += board.dy*dir;
             }
         }
     
@@ -475,23 +475,23 @@ window.onload = function(){
       
         //Bullet Shooting Function
         function shoot(){
-            if(arrow1.vis && arrow2.vis && bullets1 != -1){
+            if(bullet1.vis && bullet2.vis && bullets1 != -1){
                 moveBulletCheck = true;
                 clearTimeout(countTimeOut);
                 countTime();
                 if(bullets1%2===0){
-                    arrow1.status = true;
-                    arrow1.y = gun.y;
-                    arrow2.status = false;
-                    arrow2.x = gun.x;
-                    arrow2.vis = false;
+                    bullet1.status = true;
+                    bullet1.y = gun.y;
+                    bullet2.status = false;
+                    bullet2.x = gun.x;
+                    bullet2.vis = false;
                 }
                 else{
-                    arrow1.status = false;
-                    arrow2.y = gun.y;
-                    arrow2.status = true;
-                    arrow1.x = gun.x;
-                    arrow1.vis = false;
+                    bullet1.status = false;
+                    bullet2.y = gun.y;
+                    bullet2.status = true;
+                    bullet1.x = gun.x;
+                    bullet1.vis = false;
                 }
             totalbullets--;
             }
@@ -512,8 +512,8 @@ window.onload = function(){
             createShootingRange();
             drawGun();
             drawGunnob();
-            arrow1.drawBullet();
-            arrow2.drawBullet();
+            bullet1.drawBullet();
+            bullet2.drawBullet();
             drawBoard();
         },15)
     }
