@@ -30,7 +30,7 @@ window.onload = function(){
             clouds.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * (canvas.height - cloudHeight),
-                size: Math.random() * 50 + 50 // Random cloud size
+                size: Math.random() * 65 + 55 // Random cloud size
             });
         }
     }
@@ -120,7 +120,7 @@ window.onload = function(){
         var ctx2 = c2.getContext("2d");
 
         //Build a prototype for FireWorks Animation (Fireworks when they hit bullseye)
-        var fwBuilder = function(n,x,y,speed){
+        var fireworks = function(n,x,y,speed){
             this.n = n;
             this.x = x;
             this.y = y;
@@ -128,7 +128,7 @@ window.onload = function(){
             this.balls = [];
         }
     
-        fwBuilder.prototype.ready = function(){
+        fireworks.prototype.ready = function(){
             for(var i = 0; i < this.n; i++){
                 this.balls[i] = {
                     x:this.x,
@@ -142,8 +142,9 @@ window.onload = function(){
         }
 
         //Define the draw function for animation of fireworks
-        fwBuilder.prototype.draw = function(){
+        fireworks.prototype.draw = function(){
             for(var i = 0; i < this.n; i++){
+                ctx2.fillStyle='pink';
                 ctx2.beginPath();
                 ctx2.arc(this.balls[i].x,this.balls[i].y,7,0,Math.PI*2);
                 ctx2.fill();
@@ -162,8 +163,8 @@ window.onload = function(){
         }
         
         //Set 2 fireworks : 1 at left and other at right
-        var fw1 = new fwBuilder(40,w/5,h,3);
-        var fw2 = new fwBuilder(40,4*w/5,h,3);
+        var fw1 = new fireworks(40,w/5-100,h-100,3);
+        var fw2 = new fireworks(40,4*w/5-100,h-100,3);
     
         var intvA;
         var running = false;
@@ -197,7 +198,7 @@ window.onload = function(){
         var board = {
             x:w-40,
             y:h/2,
-            dy:3,
+            dy:3.5,
             height:150,
             width:7
         }
@@ -208,41 +209,17 @@ window.onload = function(){
         var moveBulletCheck = false;
         var score = 0;  
 
-        // GUN
-        // const gun = {
-        //   x: 250, // x-coordinate of the gun
-        //   y: h / 2, // y-coordinate of the gun
-        //   width: 30, // width of the gun
-        //   height: 10, // height of the gun
-        //   angle: 0, // angle of the gun (in radians)
-        //   color: 'white', // color of the gun
-        //   lineWidth: 5, // line width of the gun
-        //   dy: 4
-        // };
-
-        // //Gun trigger
-        // const gunnob = {
-        //   x: gun.x, // x-coordinate of the gun
-        //   y: gun.y+10, // y-coordinate of the gun
-        //   width: 15, // width of the gun
-        //   height: 5, // height of the gun
-        //   angle: 0, // angle of the gun (in radians)
-        //   color: 'white', // color of the gun
-        //   lineWidth: 5, // line width of the gun
-        //   dy: 4
-        // };
-
         //Bullets 
         const bulletProps = {
-        radius: 5, // Radius of the bullet
+        radius: 10, // Radius of the bullet
         speed: 20, // Speed of the bullet
         color: 'red', // Color of the bullet
         };
 
         // Bullet initilizations
         const bullet = {
-        x: 402, // Start x-coordinate of the bullet
-        y: 390, // Start y-coordinate of the bullet
+        x: 398, // Start x-coordinate of the bullet
+        y: 392.5, // Start y-coordinate of the bullet
         dx: Math.cos(0) * bulletProps.speed, // Horizontal speed of the bullet
         dy: Math.sin(0) * bulletProps.speed, // Vertical speed of the bullet
         radius: bulletProps.radius, // Radius of the bullet
@@ -268,7 +245,7 @@ window.onload = function(){
             ctx.fillRect(board.x,board.y-board.height/2,board.width,board.height); //main rectangle
             ctx.moveTo(board.x,board.y-15);
             ctx.quadraticCurveTo(board.x-10,board.y,board.x,board.y+15); //blue curve
-            ctx.fillStyle = 'white';
+            ctx.fillStyle = 'orange';
             ctx.fill();
             ctx.closePath();
         
@@ -295,8 +272,8 @@ window.onload = function(){
     
         //Draw Bullets
         function Bullet(){
-            this.x= 402, // Start x-coordinate of the bullet
-            this.y= 390, // Start y-coordinate of the bullet
+            this.x= 398, // Start x-coordinate of the bullet
+            this.y= 392.5, // Start y-coordinate of the bullet
             this.dx= Math.cos(0) * bulletProps.speed, // Horizontal speed of the bullet
             this.dy= Math.sin(0) * bulletProps.speed, // Vertical speed of the bullet
             this.radius= bulletProps.radius, // Radius of the bullet
@@ -386,7 +363,7 @@ window.onload = function(){
                 }
                 else {
                     ctx.beginPath();
-                    ctx.arc(402, 390-3, this.radius, 0, 2 * Math.PI);
+                    ctx.arc(398, 392.5-3, this.radius, 0, 2 * Math.PI);
                     ctx.fillStyle = this.color;
                     ctx.fill();
                     this.color='red'
@@ -414,26 +391,18 @@ window.onload = function(){
             // Create the ground
             ctx.fillStyle = '#8b4513'; // Brown color
             ctx.fillRect(0, canvas.height-100, canvas.width, 100);
-            // Create the shooting line
-            ctx.beginPath();
-            ctx.moveTo(50, canvas.height - 200);
-            ctx.lineTo(50, canvas.height - 150);
-            ctx.strokeStyle = 'black';
-            ctx.stroke();
           
             // Draw the sun
             drawSun(canvas.width - 150, 150);
 
-            drawClouds();
-            moveClouds();
+            clouddraw();
+            cloudmove();
 
             ctx.strokeStyle = "#8b4513";
             drawTree(150, 750, 250, 0, 20);
             drawTree(450, 750, 270, 0, 20); 
             drawTree(750, 750, 260, 0, 20); 
-
           }
-
 
           //Function to draw the sun
           function drawSun(x, y) {
@@ -445,64 +414,61 @@ window.onload = function(){
           }
 
 
-            function drawTree(startX, startY, length, angle, branchWidth) {
+        function drawTree(startX, startY, length, angle, branchWidth) {
+            ctx.beginPath();
+            ctx.save();
+            ctx.translate(startX, startY);
+            ctx.rotate(angle * Math.PI / 180);
+            ctx.moveTo(0, 0);
+            ctx.lineWidth = branchWidth;
+
+            // Draw the branch
+            ctx.lineTo(0, -length);
+            ctx.stroke();
+
+            // Exit condition for recursion
+            if (length < 5) {
+                // Draw leaves
                 ctx.beginPath();
-                ctx.save();
-                ctx.translate(startX, startY);
-                ctx.rotate(angle * Math.PI / 180);
-                ctx.moveTo(0, 0);
-                ctx.lineWidth = branchWidth;
-    
-                // Draw the branch
-                ctx.lineTo(0, -length);
-                ctx.stroke();
-    
-                // Exit condition for recursion
-                if (length < 10) {
-                    // Draw leaves
-                    ctx.beginPath();
-                    ctx.arc(0, -length - 10, 15, 0, Math.PI * 2);
-                    ctx.fillStyle = "green";
-                    ctx.fill();
-                    ctx.restore();
-                    return;
-                }
-    
-                // Recursive call for sub-branches
-                drawTree(0, -length, length * 0.7, -20, branchWidth * 0.8);
-                drawTree(0, -length, length * 0.7, 20, branchWidth * 0.8);
-    
+                ctx.arc(0, -length - 10, 50, 0, Math.PI * 2);
+                ctx.fillStyle = "green";
+                ctx.fill();
                 ctx.restore();
-            }            
+                return;
+            }
 
-        function drawClouds() {
+            // Recursive call for sub-branches
+            drawTree(0, -length, length * 0.6, -20, branchWidth * 0.8);
+            drawTree(0, -length, length * 0.6, 20, branchWidth * 0.8);
 
+            ctx.restore();
+        }            
+
+        function clouddraw() {
             for (let i = 0; i < clouds.length; i++) {
-                const cloudGradient = ctx.createRadialGradient(
+                const cloudGrad = ctx.createRadialGradient(
                     clouds[i].x, clouds[i].y, 0,
                     clouds[i].x, clouds[i].y, clouds[i].size
                 );
-                cloudGradient.addColorStop(0, 'white');
-                cloudGradient.addColorStop(1, 'lightgray');
+                cloudGrad.addColorStop(0, 'white');
+                cloudGrad.addColorStop(1, 'lightgray');
         
-                ctx.fillStyle = cloudGradient;
+                ctx.fillStyle = cloudGrad;
                 ctx.beginPath();
+                
                 // Draw the main ellipse
                 ctx.ellipse(clouds[i].x, clouds[i].y, clouds[i].size, clouds[i].size / 2, 0, 0, Math.PI * 2);
                 
-                // Draw a smaller ellipse
-                ctx.ellipse(clouds[i].x, clouds[i].y, clouds[i].size * 0.8, clouds[i].size * 0.4, 0, 0, Math.PI * 2);
-        
-                // Draw circles around the larger ellipse
-                const numCircles = 6;
-                const circleRadius = clouds[i].size * 0.3;
-                for (let j = 0; j < numCircles; j++) {
-                    const angle = (j / numCircles) * Math.PI * 2;
-                    const x = clouds[i].x + Math.cos(angle) * circleRadius;
-                    const y = clouds[i].y + Math.sin(angle) * circleRadius;
-                    const distanceX = Math.abs(x - clouds[i].x) / (clouds[i].size * 0.6);
-                    const distanceY = Math.abs(y - clouds[i].y) / (clouds[i].size * 0.2);
-                    const diameter = (distanceX > distanceY) ? clouds[i].size * 0.8 : clouds[i].size;
+                // Draw circles around the ellipse
+                const no_circles = 6;
+                const circle_radius = clouds[i].size * 0.3;
+                for (let j = 0; j < no_circles; j++) {
+                    const angle = (j / no_circles) * Math.PI * 2;
+                    const x = clouds[i].x + Math.cos(angle) * circle_radius;
+                    const y = clouds[i].y + Math.sin(angle) * circle_radius;
+                    const distX = Math.abs(x - clouds[i].x) / (clouds[i].size * 0.6);
+                    const distY = Math.abs(y - clouds[i].y) / (clouds[i].size * 0.2);
+                    const diameter = (distX > distY) ? clouds[i].size * 0.8 : clouds[i].size;
                     ctx.moveTo(x +diameter , y);
                     ctx.arc(x, y, diameter / 2, 0, Math.PI * 2);
                 }
@@ -512,7 +478,7 @@ window.onload = function(){
             }
         }
 
-        function moveClouds() {
+        function cloudmove() {
             for (let i = 0; i < clouds.length; i++) {
                 clouds[i].x += cloudSpeed;
                 if (clouds[i].x + cloudWidth < 0) { // Check if the endmost point of the cloud is outside the canvas
@@ -546,7 +512,7 @@ window.onload = function(){
             ctx.lineTo(300,380);
             ctx.lineTo(300,408);
             ctx.lineTo(316,408);
-            ctx.lineTo(320,402);
+            ctx.lineTo(320,400);
             ctx.lineTo(320,400);
             ctx.closePath();
             ctx.fillStyle = '#333333';
@@ -558,7 +524,7 @@ window.onload = function(){
             ctx.fill();
 
             ctx.fillStyle = '#808080';
-            ctx.fillRect(300,390,9,6);
+            ctx.fillRect(300,392.5,9,6);
 
             ctx.beginPath();
             ctx.moveTo(300,380);
@@ -570,7 +536,7 @@ window.onload = function(){
 
             ctx.beginPath();
             ctx.moveTo(300,380);
-            ctx.lineTo(271,402);
+            ctx.lineTo(271,400);
             ctx.lineTo(267,394);
             ctx.lineTo(233,394);
             ctx.lineTo(233,428);
@@ -599,7 +565,6 @@ window.onload = function(){
                 board.dy *= -1; // Reverse the vertical direction
               }
               board.y += board.dy; // Update the board's vertical position
-            //   gunnob.y += gun.dy; // Update the board's vertical position
         }
       
         //Bullet Shooting Function
@@ -610,16 +575,16 @@ window.onload = function(){
                 countTime();
                 if(bullets1%2===0){
                     bullet1.status = true;
-                    bullet1.y = 390;
+                    bullet1.y = 392.5;
                     bullet2.status = false;
-                    bullet2.x = 402;
+                    bullet2.x = 398;
                     bullet2.vis = false;
                 }
                 else{
                     bullet1.status = false;
-                    bullet2.y = 390;
+                    bullet2.y = 392.5;
                     bullet2.status = true;
-                    bullet1.x = 402;
+                    bullet1.x = 398;
                     bullet1.vis = false;
                 }
             totalbullets--;
