@@ -19,10 +19,20 @@ window.onload = function(){
 
     //Get the start button and bind the click event
     var start_btn = document.getElementById("startbtn");
+    const popup = document.getElementById("popup");
     start_btn.addEventListener("click",function(){
+        showPopup()
         startGame()
         generateClouds()
     });
+    function showPopup() {
+        popup.style.display = "block";
+        // Set a timeout to hide the popup after 2 seconds
+        setTimeout(closePopup, 700);
+      }
+    function closePopup() {
+    popup.style.display = "none";
+    }
 
     function generateClouds() {
         for (let i = 0; i < maxClouds; i++) {
