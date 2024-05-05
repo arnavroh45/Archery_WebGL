@@ -35,14 +35,14 @@ interaction, while the dynamic parts create engagement
 by allowing the user to participate actively in the animation.
 - Feedback Loop: The dynamic nature provides immediate feedback
 to the user's actions, enhancing the interactive experience.
-3. Reward System: The fireworks and extra bullets serve as a 
+- Reward System: The fireworks and extra bullets serve as a 
 reward for hitting the bullseye, encouraging users to aim 
 accurately and providing a satisfying conclusion to the interaction.
 
 **Story and Problem Solving:**
 
 The story revolves around the user's role as a shooter aiming 
-at the bullseye. The problem addressed is how to create a compelling 
+at the target board. The problem addressed is how to create a compelling 
 and interactive animation that accurately simulates shooting mechanics 
 and rewards precise aim. 
 
@@ -59,15 +59,15 @@ the board as well as the bullet. When the bullet has coordinates that lie
 within the range of the boards, points are awarded. The points are awarded 
 based on the distance of the bullet, the moment it hits the board, from the 
 bullseye. Here is a link to the code snippet, where we solved this challenge
-[collision logic](https://github.com/arnavroh45/Bullseye_Blitz/blob/arnav/demo/script.js#L317-L322)
+[collision logic](https://github.com/arnavroh45/Bullseye_Blitz/blob/arnav/demo/script.js#L317-L322).
 
 - Visual Effects: We created a circle with a large radius with balls on 
 its borders and positioned it at such a position, that it looks like a firework.
 Here is the code snippet for that
-[fireworks](https://github.com/arnavroh45/Bullseye_Blitz/blob/arnav/demo/script.js#L154-L172)
+[fireworks](https://github.com/arnavroh45/Bullseye_Blitz/blob/arnav/demo/script.js#L154-L172).
 ## Demo ##
 
-Link to [Working Demo](./demo)
+Link to [Working Demo](./demo).
 
 ## Roles ##
 
