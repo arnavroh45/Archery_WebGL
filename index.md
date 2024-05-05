@@ -8,17 +8,13 @@ The aim of this project is to create an interactive animation
 that simulates shooting at a target and rewards hitting the 
 bullseye with a display of fireworks. 
 
-The drawing assets have been created using Inkscape,
-wherein the static and dynamic parts have been
-segregated by layers.  Thus the export was separately
-possible and controlled.
+## The Storyboard
+![storyboard](<image.jpg>)
 
 ## Project GIF
 ![GIF](CG_Demo.gif)
 
-## The Storyboard
-![storyboard](<image.jpg>)
-Static and Dynamic Parts:
+## Project in Detail
 
 **Static Parts:** 
 The static parts of the animation include:
@@ -72,6 +68,6 @@ Link to [Working Demo](./demo)
 **Mannat Kaur**: 
 - Storyboard Design
 - Home Page Design
-- Drew and animated elements(GUn, Clouds, Fireworks and Trees) 
+- Drew and animated elements(Gun, Clouds, Fireworks and Trees) 
 - Added Funcitonalities(Remaining Bullets)
 - Added the timeout for each shot
