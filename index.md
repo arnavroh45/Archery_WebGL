@@ -64,7 +64,7 @@ bullseye. Here is a link to the code snippet, where we solved this challenge
 - Visual Effects: We created a circle with a large radius with balls on 
 its borders and positioned it at such a position, that it looks like a firework.
 Here is the code snippet for that
-
+[fireworks](https://github.com/arnavroh45/Bullseye_Blitz/blob/arnav/demo/script.js#L154-L172)
 ## Demo ##
 
 Link to [Working Demo](./demo)
