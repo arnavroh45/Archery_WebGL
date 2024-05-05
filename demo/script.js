@@ -463,25 +463,6 @@ window.onload = function(){
                 ctx.bezierCurveTo(clouds[i].x + 220, clouds[i].y - 25, clouds[i].x + 150, clouds[i].y - 10, clouds[i].x + 150, clouds[i].y + 20);
                 ctx.bezierCurveTo(clouds[i].x + 100, clouds[i].y - 25, clouds[i].x + 50, clouds[i].y - 10, clouds[i].x + 70, clouds[i].y + 50);
                 ctx.closePath();
-                
-                // Draw the main ellipse
-                // ctx.ellipse(clouds[i].x, clouds[i].y, clouds[i].size, clouds[i].size / 2, 0, 0, Math.PI * 2);
-                
-                // // Draw circles around the ellipse
-                // const no_circles = 6;
-                // const circle_radius = clouds[i].size * 0.3;
-                // for (let j = 0; j < no_circles; j++) {
-                //     const angle = (j / no_circles) * Math.PI * 2;
-                //     const x = clouds[i].x + Math.cos(angle) * circle_radius;
-                //     const y = clouds[i].y + Math.sin(angle) * circle_radius;
-                //     const distX = Math.abs(x - clouds[i].x) / (clouds[i].size * 0.6);
-                //     const distY = Math.abs(y - clouds[i].y) / (clouds[i].size * 0.2);
-                //     const diameter = (distX > distY) ? clouds[i].size * 0.8 : clouds[i].size;
-                //     ctx.moveTo(x +diameter , y);
-                //     ctx.arc(x, y, diameter / 2, 0, Math.PI * 2);
-                // }
-        
-                // ctx.closePath();
                 ctx.fill();
             }
         }
