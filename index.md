@@ -17,7 +17,7 @@ possible and controlled.
 ![GIF](CG_Demo.gif)
 
 ## The Storyboard
-![Storyboard](image.png)
+![storyboard](<image.jpg>)
 Static and Dynamic Parts:
 
 **Static Parts:** 
