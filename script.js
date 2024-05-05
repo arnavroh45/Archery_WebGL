@@ -1,3 +1,10 @@
+const clouds=[];
+const maxClouds= 6;
+const cloudSpeed= 0.4;
+const cloudHeight = 500;
+const cloudWidth = 150;
+
+
 //Excute once the window is loaded
 window.onload = function(){
 
@@ -15,8 +22,18 @@ window.onload = function(){
     start_btn.addEventListener("click",function(){
         console.log("Clicked")
         startGame()
+        generateClouds()
     });
 
+    function generateClouds() {
+        for (let i = 0; i < maxClouds; i++) {
+            clouds.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * (canvas.height - cloudHeight),
+                size: Math.random() * 65 + 55 // Random cloud size
+            });
+        }
+    }
 
     //Define the startGame function
     function startGame(){
@@ -28,37 +45,15 @@ window.onload = function(){
         $('#score').show();
         $('#myCanvas').show();
         $('#animCanvas').show();
-        
-        //Pick the selected theme and select image accordingly
-        // let theme = $('#opt').val()
-        // if(theme=="Basic"){
-        //     document.body.style.backgroundImage = "url('Basic.jpeg')";
-        // }
-        // else if(theme=="Summer"){
-        //     document.body.style.backgroundImage = "url('summer.jpg')";
-        // }
-        // else if(theme=="Winter"){
-        //     document.body.style.backgroundImage = "url('winter.jpg')";
-        // }
-        
+
         StartGame_Helper();
-        // let name =  $("#username").val();
-        // if(name.length == 0){
-        //     alert('Please enter your name');
-        //     document.location.href = 'index.html';
-        // }
-        // else{
-        //     document.getElementById("playername").innerHTML = "PlayerName : " + name;
-        // }
     }
     
-    //Variable to keep track of the best score
-    var bestScore = 0;
     
     //Define the startGame Helper function
     function StartGame_Helper(){
 
-        //Set the Timer for 6 secs for an arrow
+        //Set the Timer for 6 secs for a bullet
         var countTimeOut;
         function countTime(){
             var container = document.getElementById("timerDiv");
@@ -73,7 +68,7 @@ window.onload = function(){
 
         //Initially Total Score : 0 & Board isn't moving
         var totalScore = 0;
-        var autoMove = false;
+        var autoMove = false; //board moving
     
         //Get the window and height of window
         var w = window.innerWidth;
@@ -83,27 +78,29 @@ window.onload = function(){
         updatePointArea.style.height = h+"px";
         updatePointArea.style.width = w+"px";
 
-        //Get the arrows display
+        //Get the bullets display
         var uScore = document.querySelector("#showPoint .u");
         var arrs = document.getElementById("arrs");
         
-        //Function to update the number of arrows
-        function updateArrows(number_of_arrows){
-            var arr = "&uarr;";
-            arr = arr.repeat(number_of_arrows);
+        //Function to update the number of bullets
+        function updateBullets(number_of_bullets){
+            var arr = "&#10050;";
+            arr = arr.repeat(number_of_bullets);
             arrs.innerHTML = arr;
         }
 
-        //Function to animate the score 
+        //Function to animate the score(the animation after target is hit)
         function animateScore(scr,arrNum){
             if(scr >= 7) uScore.innerHTML = "&uarr; +"+scr;
             else uScore.innerHTML = "+"+scr;
-            updateArrows(arrNum);
+            updateBullets(arrNum);
+            
             var t = 50, l = 70, o = 1;
             var animIntv = setInterval(function(){
                 uScore.style.top = t + "%";
                 uScore.style.left = l + "%";
                 uScore.style.opacity = o;
+                uScore.style.color = "white";
                 t-=4;
                 l-=3;
                 o-=0.1;
@@ -122,8 +119,8 @@ window.onload = function(){
         c2.width = w;
         var ctx2 = c2.getContext("2d");
 
-        //Build a prototype for FireWorks Animation
-        var fwBuilder = function(n,x,y,speed){
+        //Build a prototype for FireWorks Animation (Fireworks when they hit bullseye)
+        var fireworks = function(n,x,y,speed){
             this.n = n;
             this.x = x;
             this.y = y;
@@ -131,7 +128,7 @@ window.onload = function(){
             this.balls = [];
         }
     
-        fwBuilder.prototype.ready = function(){
+        fireworks.prototype.ready = function(){
             for(var i = 0; i < this.n; i++){
                 this.balls[i] = {
                     x:this.x,
@@ -145,8 +142,9 @@ window.onload = function(){
         }
 
         //Define the draw function for animation of fireworks
-        fwBuilder.prototype.draw = function(){
+        fireworks.prototype.draw = function(){
             for(var i = 0; i < this.n; i++){
+                ctx2.fillStyle='pink';
                 ctx2.beginPath();
                 ctx2.arc(this.balls[i].x,this.balls[i].y,7,0,Math.PI*2);
                 ctx2.fill();
@@ -165,8 +163,8 @@ window.onload = function(){
         }
         
         //Set 2 fireworks : 1 at left and other at right
-        var fw1 = new fwBuilder(40,w/5,h,3);
-        var fw2 = new fwBuilder(40,4*w/5,h,3);
+        var fw1 = new fireworks(40,w/5-100,h-100,3);
+        var fw2 = new fireworks(40,4*w/5-100,h-100,3);
     
         var intvA;
         var running = false;
@@ -193,57 +191,63 @@ window.onload = function(){
         c.height = h;
         c.width = w;
         var ctx = c.getContext("2d");
-        var checkArrowMoveWithBoard1 = false;
-        var checkArrowMoveWithBoard2 = false;
+        var checkBulletMoveWithBoard1 = false;
+        var checkBulletMoveWithBoard2 = false;
 
-        // Objects :   1)  Arc
-        //             2)  Rope
-        //             3)  Board
-        var arc = {
-            x:30,
-            y:100,
-            dy:3,
-            r:50,
-            color:"#000",
-            lw:3,
-            start:Math.PI+Math.PI/2,
-            end:Math.PI-Math.PI/2
-        }
-    
-        var rope = {
-            h:arc.r*2,
-              lw:1,
-              x:arc.x-25,
-              color:"#000",
-              status:true
-        }
-    
+        // target board
         var board = {
             x:w-40,
             y:h/2,
-            dy:4,
+            dy:3.5,
             height:150,
             width:7
         }
-        
-        //Define The Maximum Number of Arrows
         var boardY;
         var boardMove = false;
-        var totalArr = 5;
-        updateArrows(totalArr);
+
+        //Is the bullet moving
+        var moveBulletCheck = false;
+        var score = 0;  
+
+        //Bullets 
+        const bulletProps = {
+        radius: 10, // Radius of the bullet
+        speed: 20, // Speed of the bullet
+        color: 'red', // Color of the bullet
+        };
+
+        // Bullet initilizations
+        const bullet = {
+        x: 398, // Start x-coordinate of the bullet
+        y: 392.5, // Start y-coordinate of the bullet
+        dx: Math.cos(0) * bulletProps.speed, // Horizontal speed of the bullet
+        dy: Math.sin(0) * bulletProps.speed, // Vertical speed of the bullet
+        radius: bulletProps.radius, // Radius of the bullet
+        color: bulletProps.color, // Color of the bullet
+        };
+
+
+        var bullet1 = new Bullet();
+        var bullet2 = new Bullet();
+
+        // initialization of bullets variable to keep count of bullets
+        var bullets1 = 0;
+
+        // total bullets
+        var totalbullets = 4;
+        updateBullets(totalbullets);
 
         //Function for drawing the board
         function drawBoard() {
             ctx.beginPath();
-            ctx.fillRect(board.x,board.y-5,40,board.width+3);
-            ctx.fillRect(board.x,board.y-board.height/2,board.width,board.height);
+            ctx.fillStyle='black';
+            ctx.fillRect(board.x,board.y-5,40,board.width+3); //rectangle right side to the main rectangle board width, height
+            ctx.fillRect(board.x,board.y-board.height/2,board.width,board.height); //main rectangle
             ctx.moveTo(board.x,board.y-15);
-            ctx.quadraticCurveTo(board.x-10,board.y,board.x,board.y+15);
-            //ctx.lineTo(10,6);
-            ctx.fillStyle = "#36e";
+            ctx.quadraticCurveTo(board.x-10,board.y,board.x,board.y+15); //blue curve
+            ctx.fillStyle = 'orange';
             ctx.fill();
             ctx.closePath();
-            ctx.fillStyle = "#000";
         
             if(board.y >= h || board.y <= 0){
                 board.dy *= -1;
@@ -251,92 +255,74 @@ window.onload = function(){
         
             if(autoMove){
                 board.y += board.dy;
-                if(checkArrowMoveWithBoard1){
-                    arrow1.moveArrowWithBoard(1);
-                }
-                else if(checkArrowMoveWithBoard2){
-                    arrow2.moveArrowWithBoard(1);
-                }
             }
             else{
                 if(boardMove){
-                    if(Math.abs(board.y - boardY) > 5){
+                    if(Math.abs(board.y - boardY) > 0){
                         board.y += board.dy;
-                        arrow1.moveArrowWithBoard(1);
-                        arrow2.moveArrowWithBoard(1);
                     }
                 }
                 else{
-                    if(Math.abs(board.y - boardY) > 5){
+                    if(Math.abs(board.y - boardY) > 0){
                         board.y -= board.dy;
-                        arrow1.moveArrowWithBoard(-1);
-                        arrow2.moveArrowWithBoard(-1);
                     }
                 }
             }
         }
     
-        //Draw Arrow and Define functionality
-        function Arrow(){
-            this.w = 85;
-            this.x = arc.x-25;
-            this.dx = 20;
-            this.status = false;
-            this.vis = true;
-            this.fy = arc.y;
+        //Draw Bullets
+        function Bullet(){
+            this.x= 398, // Start x-coordinate of the bullet
+            this.y= 392.5, // Start y-coordinate of the bullet
+            this.dx= Math.cos(0) * bulletProps.speed, // Horizontal speed of the bullet
+            this.dy= Math.sin(0) * bulletProps.speed, // Vertical speed of the bullet
+            this.radius= bulletProps.radius, // Radius of the bullet
+            this.color= bulletProps.color, // Color of the bullet
+            this.status = false; // Flag to indicate if the ball is in motion
+            this.vis = true; // Flag to indicate if the ball is visible
         }
     
-        Arrow.prototype.drawArrow = function() {
+        Bullet.prototype.drawBullet = function() {
             if(this.vis) {
-                if(this.status) {
-                    ctx.fillRect(this.x,this.fy-3,10,6);
-                    ctx.fillRect(this.x,this.fy-1,this.w,2);
+                if(this.status) {   
                     ctx.beginPath();
-                    ctx.moveTo(this.x+this.w,this.fy-4);
-                    ctx.lineTo(this.x+this.w+12,this.fy);
-                    ctx.lineTo(this.x+this.w,this.fy+4);
+                    ctx.arc(this.x+this.dx, this.y+this.dy, this.radius, 0, 2 * Math.PI);
+                    ctx.fillStyle = this.color;
                     ctx.fill();
-                
-                    if(moveArrowCheck) {
+
+                    if(moveBulletCheck) {
                         if(this.x < w-155){
                             this.x += this.dx;
                         }
                         else {
-                            if(!(this.fy <= board.y-board.height/2 || this.fy >= board.y+board.height/2) || this.x > w){
-                                if(this.x > w-110){
-                                    if(this == arrow1){
-                                        arrow2.vis = true;
-                                        checkArrowMoveWithBoard1 = true;
-                                        checkArrowMoveWithBoard2 = false;
-                                    }
-                                    else {
-                                        arrow1.vis = true;
-                                        checkArrowMoveWithBoard1 = false;
-                                        checkArrowMoveWithBoard2 = true;
-                                    }
-                                    moveArrowCheck = false;
+                            if(!(this.y <= board.y-board.height/2 || this.y >= board.y+board.height/2) || this.x > w){
+                                    if(this.x > w-62){
+                                        if(this == bullet1){
+                                            bullet2.vis = true;
+                                        }
+                                        else {
+                                            bullet1.vis = true;
+                                        }
+                                    moveBulletCheck = false;
                                     score++;
-                                    if(score === 4){
-                                        arc.dy = 5;
-                                    }
-                            
-                                    if(this.fy >= board.y-board.height/2 && this.fy <= board.y+board.height/2) {
-                                        var scores = this.fy - board.y;
-                                        var currentScore = Math.round(board.height/20)-Math.round(Math.abs(scores/10));
+                                    if(this.y >= board.y-board.height/2 && this.y <= board.y+board.height/2) {
+                                        var scores = Math.abs(this.y - board.y);
+                                        var currentScore = Math.round(board.height/15)-Math.round(Math.abs(scores/10));
                                         if(currentScore >= 7){
                                             newF();
-                                            totalArr+=2;
+                                            totalbullets+=2;
                                         }
                                         else if(currentScore>=6){
-                                            totalArr+=1;
-                                        }
-                                
+                                            totalbullets+=1;
+                                        }             
+                                        this.color= '#87CEEB'
+                                        this.y = board.y                 
                                         totalScore += currentScore;
-                                        gameScore.innerHTML = totalScore;
-                                    
-                                        animateScore(currentScore,totalArr);
-                                    
-                                        boardY = board.y + scores;
+                                        gameScore.innerHTML = totalScore;                                    
+                                        animateScore(currentScore,totalbullets);
+                                        
+                                        boardY = board.y + 1;
+                                        
                                         if(scores>=0){
                                             boardMove = true;
                                         }
@@ -346,16 +332,15 @@ window.onload = function(){
  
                                     }
                                     else{
-                                        updateArrows(totalArr);
+                                        updateBullets(totalbullets);
                                     }
 
                                     if(totalScore >= 30){
                                         autoMove = true;
                                     }
 
-                                    if(totalArr <= 0){
+                                    if(totalbullets <= 0){
                                         clearInterval(intv);
-                                        // document.body.style.backgroundImage = "url('Img2.jpg')";
                                         document.getElementById("animCanvas").removeEventListener("click",shoot);
                                         document.body.removeEventListener("keydown",shoot);
                                         entrypage.style.display = "block";
@@ -363,14 +348,7 @@ window.onload = function(){
                                         $('#animCanvas').hide();
                                         $('#showPoint').hide();
                                         $('#score').hide();
-                                        document.getElementById("title").innerHTML = "Your Score<br>"+totalScore;
-                                        if(bestScore < totalScore){
-                                            bestScore = totalScore;
-                                            console.log(bestScore);
-                                        }
-                                        $('#best').show()
-                                        document.getElementById("score").innerHTML = 0;
-                                        document.getElementById("best").innerHTML = "Best Score : " + bestScore;
+                                        document.getElementById("title").innerHTML = "Your Score<br><br><br>"+totalScore;
                                     }
                                 }
                                 else {
@@ -384,112 +362,261 @@ window.onload = function(){
                     }
                 }
                 else {
-                    ctx.fillRect(rope.x,arc.y-3,10,6);
-                    ctx.fillRect(rope.x,arc.y-1,this.w,2);
                     ctx.beginPath();
-                    ctx.moveTo(rope.x+this.w,arc.y-4);
-                    ctx.lineTo(rope.x+this.w+12,arc.y);
-                    ctx.lineTo(rope.x+this.w,arc.y+4);
+                    ctx.arc(398, 392.5-3, this.radius, 0, 2 * Math.PI);
+                    ctx.fillStyle = this.color;
                     ctx.fill();
+                    this.color='red'
                 }
             }
         }
 
-        // Arrow Move With Board
-        Arrow.prototype.moveArrowWithBoard = function(dir) {
-            if(this == arrow1){
-                arrow1.fy += board.dy*dir;
+        // Bullet Move With Board
+        Bullet.prototype.moveBulletWithBoard = function(dir) {
+            if(this == bullet1){
+                bullet1.y += board.dy*dir;
             }
             else {
-                arrow2.fy += board.dy*dir;
+                bullet2.y += board.dy*dir;
             }
         }
-
-        //Two Arrows would be used :
-        //Once an arrow goes to strike the board the other arrow appears in bow
-        var arrow1 = new Arrow();
-        var arrow2 = new Arrow();
-        
-        //Count of how many arrows have been used
-        var arrows = 0;
-
-        //Is the arrow moving
-        var moveArrowCheck = false;
-
-        var score = 0;
     
         //Functions for Drawing Items :
-        //  1) Draw Board
-        //  2) Draw Arc
-        //  3) Draw Rope
-        function drawArc() {
+
+        function createShootingRange() {
+            // Create the background
+            ctx.fillStyle = '#87CEEB'; // Sky blue color--VistaCreate
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+          
+            // Create the ground
+            ctx.fillStyle = '#8b4513'; // Brown color
+            ctx.fillRect(0, canvas.height-100, canvas.width, 100);
+          
+            // Draw the sun
+            drawSun(canvas.width - 150, 150);
+
+            clouddraw();
+            cloudmove();
+
+            ctx.strokeStyle = "#8b4513";
+            drawTree(150, 750, 250, 0, 20);
+            drawTree(450, 750, 270, 0, 20); 
+            drawTree(750, 750, 260, 0, 20); 
+          }
+
+          //Function to draw the sun
+          function drawSun(x, y) {
             ctx.beginPath();
-              ctx.arc(arc.x,arc.y,arc.r,arc.start,arc.end);
-              ctx.strokeStyle = arc.color;
-              ctx.lineWidth = arc.lw;
-              ctx.stroke();
-              ctx.closePath();
-        }
-    
-        function drawRope() {
+            ctx.arc(x, y, 50, 0, 2 * Math.PI);
+            ctx.fillStyle = '#FDB813';
+            ctx.fill();
+            ctx.closePath();
+          }
+
+
+        function drawTree(startX, startY, length, angle, branchWidth) {
             ctx.beginPath();
-              ctx.moveTo(arc.x,arc.y-arc.r);
-              if(arrow1.vis && arrow2.vis){
-                ctx.lineTo(rope.x,arc.y);
-              }
-              ctx.lineTo(arc.x,arc.y+arc.r);
-              ctx.lineWidth = rope.lw;
-              ctx.strokeStyle = rope.color;
-              ctx.stroke();
-              ctx.closePath();
+            ctx.save();
+            ctx.translate(startX, startY);
+            ctx.rotate(angle * Math.PI / 180);
+            ctx.moveTo(0, 0);
+            ctx.lineWidth = branchWidth;
+
+            // Draw the branch
+            ctx.lineTo(0, -length);
+            ctx.stroke();
+
+            // Exit condition for recursion
+            if (length < 5) {
+                // Draw leaves
+                ctx.beginPath();
+                ctx.arc(0, -length - 10, 50, 0, Math.PI * 2);
+                ctx.fillStyle = "green";
+                ctx.fill();
+                ctx.restore();
+                return;
+            }
+
+            // Recursive call for sub-branches
+            drawTree(0, -length, length * 0.6, -20, branchWidth * 0.8);
+            drawTree(0, -length, length * 0.6, 20, branchWidth * 0.8);
+
+            ctx.restore();
+        }            
+
+        function clouddraw() {
+            for (let i = 0; i < clouds.length; i++) {
+                const cloudGrad = ctx.createRadialGradient(
+                    clouds[i].x, clouds[i].y, 0,
+                    clouds[i].x, clouds[i].y, clouds[i].size
+                );
+                cloudGrad.addColorStop(0, 'white');
+                cloudGrad.addColorStop(1, 'lightgray');
+        
+                ctx.fillStyle = cloudGrad;
+                ctx.beginPath();
+                ctx.moveTo(clouds[i].x + 70, clouds[i].y + 20);
+                ctx.bezierCurveTo(clouds[i].x + 30, clouds[i].y + 70, clouds[i].x + 30, clouds[i].y + 120, clouds[i].x + 130, clouds[i].y + 120);
+                ctx.bezierCurveTo(clouds[i].x + 150, clouds[i].y + 150, clouds[i].x + 220, clouds[i].y + 150, clouds[i].x + 240, clouds[i].y + 120);
+                ctx.bezierCurveTo(clouds[i].x + 320, clouds[i].y + 120, clouds[i].x + 320, clouds[i].y + 90, clouds[i].x + 290, clouds[i].y + 70);
+                ctx.bezierCurveTo(clouds[i].x + 330, clouds[i].y + 10, clouds[i].x + 270, clouds[i].y, clouds[i].x + 240, clouds[i].y + 20);
+                ctx.bezierCurveTo(clouds[i].x + 220, clouds[i].y - 25, clouds[i].x + 150, clouds[i].y - 10, clouds[i].x + 150, clouds[i].y + 20);
+                ctx.bezierCurveTo(clouds[i].x + 100, clouds[i].y - 25, clouds[i].x + 50, clouds[i].y - 10, clouds[i].x + 70, clouds[i].y + 50);
+                ctx.closePath();
+                
+                // Draw the main ellipse
+                // ctx.ellipse(clouds[i].x, clouds[i].y, clouds[i].size, clouds[i].size / 2, 0, 0, Math.PI * 2);
+                
+                // // Draw circles around the ellipse
+                // const no_circles = 6;
+                // const circle_radius = clouds[i].size * 0.3;
+                // for (let j = 0; j < no_circles; j++) {
+                //     const angle = (j / no_circles) * Math.PI * 2;
+                //     const x = clouds[i].x + Math.cos(angle) * circle_radius;
+                //     const y = clouds[i].y + Math.sin(angle) * circle_radius;
+                //     const distX = Math.abs(x - clouds[i].x) / (clouds[i].size * 0.6);
+                //     const distY = Math.abs(y - clouds[i].y) / (clouds[i].size * 0.2);
+                //     const diameter = (distX > distY) ? clouds[i].size * 0.8 : clouds[i].size;
+                //     ctx.moveTo(x +diameter , y);
+                //     ctx.arc(x, y, diameter / 2, 0, Math.PI * 2);
+                // }
+        
+                // ctx.closePath();
+                ctx.fill();
+            }
         }
 
-        //Arrow Moving function...
+        function cloudmove() {
+            for (let i = 0; i < clouds.length; i++) {
+                clouds[i].x += cloudSpeed;
+                if (clouds[i].x + cloudWidth < 0) { // Check if the endmost point of the cloud is outside the canvas
+                    clouds[i].x = canvas.width; // Reset the cloud position to the right side of the canvas
+                    clouds[i].y = Math.random() * (canvas.height - cloudHeight);
+                }
+                if (clouds[i].x - clouds[i].size > canvas.width) { // Check if the endmost point of the cloud has reached the canvas width
+                    clouds[i].x = -cloudWidth; // Reset the cloud position to the left side of the canvas
+                    clouds[i].y = Math.random() * (canvas.height - cloudHeight);
+                }
+            }
+        }
+
+        function drawGun(){
+            ctx.beginPath();
+            ctx.moveTo(320,380);
+            ctx.fillStyle = '#333333';
+            ctx.fillRect(320,380,80,20);
+            ctx.moveTo(400,380);
+            ctx.lineTo(406,379);
+            ctx.lineTo(406,401);
+            ctx.lineTo(400,400);
+            ctx.closePath();
+            ctx.fillStyle = '#333333';
+            ctx.fill();
+            ctx.fillStyle = '#333333';
+            ctx.fillRect(394,380,4,-2);
+
+            ctx.beginPath();
+            ctx.moveTo(320,380);
+            ctx.lineTo(300,380);
+            ctx.lineTo(300,408);
+            ctx.lineTo(316,408);
+            ctx.lineTo(320,400);
+            ctx.lineTo(320,400);
+            ctx.closePath();
+            ctx.fillStyle = '#333333';
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(300,394,14,-Math.PI,Math.PI);
+            ctx.fillStyle = '#333333';
+            ctx.fill();
+
+            ctx.fillStyle = '#808080';
+            ctx.fillRect(300,392.5,9,6);
+
+            ctx.beginPath();
+            ctx.moveTo(300,380);
+            ctx.lineTo(290,376);
+            ctx.lineTo(290.5,381);
+            ctx.closePath();
+            ctx.fillStyle = '#333333';
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.moveTo(300,380);
+            ctx.lineTo(271,400);
+            ctx.lineTo(267,394);
+            ctx.lineTo(233,394);
+            ctx.lineTo(233,428);
+            ctx.lineTo(250,427);
+            ctx.lineTo(300,408);
+            ctx.closePath();
+            ctx.fillStyle = '#333333';
+            ctx.fill();
+
+            ctx.strokeStyle = '#333333';
+            ctx.strokeRect(309,408,-24,6);
+
+
+            ctx.beginPath();
+            ctx.moveTo(300,408);
+            ctx.lineTo(302,411);
+            ctx.closePath();
+            ctx.fillStyle = '#333333';
+            ctx.stroke();
+        }
+
+        //Board Moving function...
         function move (){
             ctx.clearRect(0,0,w,h);
-            if(arc.y>h-50 || arc.y<50){
-              arc.dy*=-1;
-            }
-            arc.y+=arc.dy;
+            if (board.y > h - 50 || board.y < 50) {
+                board.dy *= -1; // Reverse the vertical direction
+              }
+              board.y += board.dy; // Update the board's vertical position
         }
       
-        //Arrow Shooting Function
+        //Bullet Shooting Function
         function shoot(){
-            if(arrow1.vis && arrow2.vis && arrows != -1){
-                moveArrowCheck = true;
+            if(bullet1.vis && bullet2.vis && bullets1 != -1){
+                moveBulletCheck = true;
                 clearTimeout(countTimeOut);
                 countTime();
-                if(arrows%2===0){
-                    arrow1.status = true;
-                    arrow1.fy = arc.y;
-                    arrow2.status = false;
-                    arrow2.x = rope.x;
-                    arrow2.vis = false;
+                if(bullets1%2===0){
+                    bullet1.status = true;
+                    bullet1.y = 392.5;
+                    bullet2.status = false;
+                    bullet2.x = 398;
+                    bullet2.vis = false;
                 }
                 else{
-                    arrow1.status = false;
-                    arrow2.fy = arc.y;
-                    arrow2.status = true;
-                    arrow1.x = rope.x;
-                    arrow1.vis = false;
+                    bullet1.status = false;
+                    bullet2.y = 392.5;
+                    bullet2.status = true;
+                    bullet1.x = 398;
+                    bullet1.vis = false;
                 }
-            totalArr--;
+            totalbullets--;
             }
-            arrows++;
+            bullets1++;
         }
         
-        //On any key stroke, call the shoot arrow function
-        document.getElementById("animCanvas").addEventListener("click",shoot);
-        document.body.addEventListener("keydown",shoot);
+        //Use G to play, call the shoot Bullet function
+        document.getElementById("animCanvas").addEventListener("click", shoot);
+        document.body.addEventListener("keydown", function(event) {
+        if (event.key === "g" || event.key === "G") {
+            shoot();
+        }
+        });
         
         //Call the functions for drawing various objects and load the game
         var intv = setInterval(function(){
-              move();
-              drawArc();
-              drawRope();
-              arrow1.drawArrow();
-              arrow2.drawArrow();
-              drawBoard();
+            move();
+            createShootingRange();
+            
+            bullet1.drawBullet();
+            bullet2.drawBullet();
+            drawGun();
+            drawBoard();
         },15)
     }
 }
