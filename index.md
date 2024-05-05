@@ -22,22 +22,22 @@ Static and Dynamic Parts:
 
 **Static Parts:** 
 The static parts of the animation include:
-1. The gun
-2. The trees
-3. The sun.
+- The gun
+- The trees
+- The sun.
 
 **Dynamic Parts:** 
 The dynamic parts of the animation include:
-1. Firing the bullet
-2. Moving target board
-3. Movement of clouds 
-4. The fireworks
+- Firing the bullet
+- Moving target board
+- Movement of clouds 
+- The fireworks
 
 **Rationale:**
-1. Engagement: The static elements set the stage for the 
+- Engagement: The static elements set the stage for the 
 interaction, while the dynamic parts create engagement 
 by allowing the user to participate actively in the animation.
-2. Feedback Loop: The dynamic nature provides immediate feedback
+- Feedback Loop: The dynamic nature provides immediate feedback
 to the user's actions, enhancing the interactive experience.
 3. Reward System: The fireworks and extra bullets serve as a 
 reward for hitting the bullseye, encouraging users to aim 
@@ -50,9 +50,9 @@ at the bullseye. The problem addressed is how to create a compelling
 and interactive animation that accurately simulates shooting mechanics 
 and rewards precise aim. 
 Challenges faced include:
-1. Event Handling: Managing user input for firing the bullet and 
+- Event Handling: Managing user input for firing the bullet and 
 detecting hits on the bullseye involved complex event handling logic.
-2. Visual Effects: Designing visually appealing fireworks that synchronize
+- Visual Effects: Designing visually appealing fireworks that synchronize
 with the hit event without causing performance issues posed technical 
 and artistic challenges.
 
@@ -63,6 +63,15 @@ Link to [Working Demo](./demo)
 
 ## Roles ##
 
-**Arnav Sharma** : 
+**Arnav Sharma** 
+- Created Documentation Website
+- Drew and animated elements(Bullet, Board) 
+- Added Funcitonalities(Scores)
+- Collision Detection Logic
 
 **Mannat Kaur**: 
+- Storyboard Design
+- Home Page Design
+- Drew and animated elements(GUn, Clouds, Fireworks and Trees) 
+- Added Funcitonalities(Remaining Bullets)
+- Added the timeout for each shot
