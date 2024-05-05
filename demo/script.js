@@ -19,11 +19,20 @@ window.onload = function(){
 
     //Get the start button and bind the click event
     var start_btn = document.getElementById("startbtn");
+    const popup = document.getElementById("popup");
     start_btn.addEventListener("click",function(){
-        console.log("Clicked")
+        showPopup()
         startGame()
         generateClouds()
     });
+    function showPopup() {
+        popup.style.display = "block";
+        // Set a timeout to hide the popup after 2 seconds
+        setTimeout(closePopup, 700);
+      }
+    function closePopup() {
+    popup.style.display = "none";
+    }
 
     function generateClouds() {
         for (let i = 0; i < maxClouds; i++) {
@@ -455,6 +464,8 @@ window.onload = function(){
         
                 ctx.fillStyle = cloudGrad;
                 ctx.beginPath();
+                
+                // Draw the clouds
                 ctx.moveTo(clouds[i].x + 70, clouds[i].y + 20);
                 ctx.bezierCurveTo(clouds[i].x + 30, clouds[i].y + 70, clouds[i].x + 30, clouds[i].y + 120, clouds[i].x + 130, clouds[i].y + 120);
                 ctx.bezierCurveTo(clouds[i].x + 150, clouds[i].y + 150, clouds[i].x + 220, clouds[i].y + 150, clouds[i].x + 240, clouds[i].y + 120);
