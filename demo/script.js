@@ -19,20 +19,11 @@ window.onload = function(){
 
     //Get the start button and bind the click event
     var start_btn = document.getElementById("startbtn");
-    const popup = document.getElementById("popup");
     start_btn.addEventListener("click",function(){
-        showPopup()
+        console.log("Clicked")
         startGame()
         generateClouds()
     });
-    function showPopup() {
-        popup.style.display = "block";
-        // Set a timeout to hide the popup after 2 seconds
-        setTimeout(closePopup, 700);
-      }
-    function closePopup() {
-    popup.style.display = "none";
-    }
 
     function generateClouds() {
         for (let i = 0; i < maxClouds; i++) {
@@ -464,25 +455,33 @@ window.onload = function(){
         
                 ctx.fillStyle = cloudGrad;
                 ctx.beginPath();
+                ctx.moveTo(clouds[i].x + 70, clouds[i].y + 20);
+                ctx.bezierCurveTo(clouds[i].x + 30, clouds[i].y + 70, clouds[i].x + 30, clouds[i].y + 120, clouds[i].x + 130, clouds[i].y + 120);
+                ctx.bezierCurveTo(clouds[i].x + 150, clouds[i].y + 150, clouds[i].x + 220, clouds[i].y + 150, clouds[i].x + 240, clouds[i].y + 120);
+                ctx.bezierCurveTo(clouds[i].x + 320, clouds[i].y + 120, clouds[i].x + 320, clouds[i].y + 90, clouds[i].x + 290, clouds[i].y + 70);
+                ctx.bezierCurveTo(clouds[i].x + 330, clouds[i].y + 10, clouds[i].x + 270, clouds[i].y, clouds[i].x + 240, clouds[i].y + 20);
+                ctx.bezierCurveTo(clouds[i].x + 220, clouds[i].y - 25, clouds[i].x + 150, clouds[i].y - 10, clouds[i].x + 150, clouds[i].y + 20);
+                ctx.bezierCurveTo(clouds[i].x + 100, clouds[i].y - 25, clouds[i].x + 50, clouds[i].y - 10, clouds[i].x + 70, clouds[i].y + 50);
+                ctx.closePath();
                 
                 // Draw the main ellipse
-                ctx.ellipse(clouds[i].x, clouds[i].y, clouds[i].size, clouds[i].size / 2, 0, 0, Math.PI * 2);
+                // ctx.ellipse(clouds[i].x, clouds[i].y, clouds[i].size, clouds[i].size / 2, 0, 0, Math.PI * 2);
                 
-                // Draw circles around the ellipse
-                const no_circles = 6;
-                const circle_radius = clouds[i].size * 0.3;
-                for (let j = 0; j < no_circles; j++) {
-                    const angle = (j / no_circles) * Math.PI * 2;
-                    const x = clouds[i].x + Math.cos(angle) * circle_radius;
-                    const y = clouds[i].y + Math.sin(angle) * circle_radius;
-                    const distX = Math.abs(x - clouds[i].x) / (clouds[i].size * 0.6);
-                    const distY = Math.abs(y - clouds[i].y) / (clouds[i].size * 0.2);
-                    const diameter = (distX > distY) ? clouds[i].size * 0.8 : clouds[i].size;
-                    ctx.moveTo(x +diameter , y);
-                    ctx.arc(x, y, diameter / 2, 0, Math.PI * 2);
-                }
+                // // Draw circles around the ellipse
+                // const no_circles = 6;
+                // const circle_radius = clouds[i].size * 0.3;
+                // for (let j = 0; j < no_circles; j++) {
+                //     const angle = (j / no_circles) * Math.PI * 2;
+                //     const x = clouds[i].x + Math.cos(angle) * circle_radius;
+                //     const y = clouds[i].y + Math.sin(angle) * circle_radius;
+                //     const distX = Math.abs(x - clouds[i].x) / (clouds[i].size * 0.6);
+                //     const distY = Math.abs(y - clouds[i].y) / (clouds[i].size * 0.2);
+                //     const diameter = (distX > distY) ? clouds[i].size * 0.8 : clouds[i].size;
+                //     ctx.moveTo(x +diameter , y);
+                //     ctx.arc(x, y, diameter / 2, 0, Math.PI * 2);
+                // }
         
-                ctx.closePath();
+                // ctx.closePath();
                 ctx.fill();
             }
         }
