@@ -20,7 +20,6 @@ window.onload = function(){
     //Get the start button and bind the click event
     var start_btn = document.getElementById("startbtn");
     start_btn.addEventListener("click",function(){
-        console.log("Clicked")
         startGame()
         generateClouds()
     });
