@@ -59,8 +59,9 @@ the board as well as the bullet. When the bullet has coordinates that lie
 within the range of the boards, points are awarded. The points are awarded 
 based on the distance of the bullet, the moment it hits the board, from the 
 bullseye. Here is a link to the code snippet, where we solved this challenge
+[collision logic](https://github.com/arnavroh45/Bullseye_Blitz/blob/arnav/demo/script.js#L317-L322)
 
--Visual Effects: We created a circle with a large radius with balls on 
+- Visual Effects: We created a circle with a large radius with balls on 
 its borders and positioned it at such a position, that it looks like a firework.
 Here is the code snippet for that
 
