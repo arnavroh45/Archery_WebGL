@@ -100,7 +100,7 @@ window.onload = function(){
 
         //Function to animate the score(the animation after target is hit)
         function animateScore(scr,arrNum){
-            if(scr >= 7) uScore.innerHTML = "&uarr; +"+scr;
+            if(scr >= 7) uScore.innerHTML = "&#10050; +"+scr;
             else uScore.innerHTML = "+"+scr;
             updateBullets(arrNum);
             
@@ -216,7 +216,7 @@ window.onload = function(){
 
         //Is the bullet moving
         var moveBulletCheck = false;
-        var score = 0;  
+        // var score = 0;  
 
         //Bullets 
         const bulletProps = {
@@ -313,7 +313,7 @@ window.onload = function(){
                                             bullet1.vis = true;
                                         }
                                     moveBulletCheck = false;
-                                    score++;
+                                    // score++;
                                     if(this.y >= board.y-board.height/2 && this.y <= board.y+board.height/2) {
                                         var scores = Math.abs(this.y - board.y);
                                         var currentScore = Math.round(board.height/15)-Math.round(Math.abs(scores/10));

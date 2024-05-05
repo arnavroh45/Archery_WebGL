@@ -45,13 +45,24 @@ The story revolves around the user's role as a shooter aiming
 at the bullseye. The problem addressed is how to create a compelling 
 and interactive animation that accurately simulates shooting mechanics 
 and rewards precise aim. 
-Challenges faced include:
+
+**Challenges**
 - Event Handling: Managing user input for firing the bullet and 
 detecting hits on the bullseye involved complex event handling logic.
-- Visual Effects: Designing visually appealing fireworks that synchronize
-with the hit event without causing performance issues posed technical 
-and artistic challenges.
+- Visual Effects: Designing visually appealing fireworks that 
+synchronize with the hit event, movement of board, bullets and the clouds
+without causing performance issues posed technical and artistic challenges.
 
+**How we solved these challenges**
+- Event Handling: We solved this challenge by comaparing the positions of 
+the board as well as the bullet. When the bullet has coordinates that lie 
+within the range of the boards, points are awarded. The points are awarded 
+based on the distance of the bullet, the moment it hits the board, from the 
+bullseye. Here is a link to the code snippet, where we solved this challenge
+
+-Visual Effects: We created a circle with a large radius with balls on 
+its borders and positioned it at such a position, that it looks like a firework.
+Here is the code snippet for that
 
 ## Demo ##
 
