@@ -76,7 +76,7 @@ Link to [Working Demo](./demo).
 - [For representing the number of bullets remaining on the top left hand corner.](https://www.w3schools.com/charsets/tryit.asp?deci=10050)
 - [For referring to canvas rendering context concepts.](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D)
 - [For DOM manipulation](https://code.jquery.com/jquery-3.5.1.js)
-- [For the entry page backdrop](https://www.google.com/url?sa=i&url=https%3A%2F%2Fpngtree.com%2Ffree-backgrounds-photos%2Fshooting-target&psig=AOvVaw1Jy_VXcRi86zMJyIrIcudz&ust=1715157030636000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCJCg3P2P-4UDFQAAAAAdAAAAABAE)
+- [For the entry page backdrop](https://pngtree.com/freebackground/shooting-training-flat-composition-with-two-male-characters-in-protective-ammunition-holding-weapon-and-shooting-at-targets-vector-illustration_1872162.html)
 
 ## Roles ##
 
