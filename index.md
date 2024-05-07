@@ -65,6 +65,8 @@ bullseye. Here is a link to the code snippet, where we solved this challenge
 its borders and positioned it at such a position, that it looks like a firework.
 Here is the code snippet for that
 [fireworks](https://github.com/arnavroh45/Bullseye_Blitz/blob/arnav/demo/script.js#L154-L172).
+[synchronizing with the score](https://github.com/arnavroh45/Bullseye_Blitz/blob/arnav/demo/script.js#L320-L321).
+
 ## Demo ##
 
 Link to [Working Demo](./demo).
