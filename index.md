@@ -87,5 +87,5 @@ Link to [Working Demo](./demo).
 - Storyboard Design
 - Home Page Design
 - Drew and animated elements(Gun, Clouds, Fireworks and Trees) 
-- Added Funcitonalities(Remaining Bullets)
+- Added Functionalities(Remaining Bullets)
 - Added the timeout for each shot
