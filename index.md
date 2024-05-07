@@ -69,6 +69,12 @@ Here is the code snippet for that
 
 Link to [Working Demo](./demo).
 
+## Resources Referred ##
+
+- [For representing the number of bullets remaining on the top left hand corner.](https://www.w3schools.com/charsets/tryit.asp?deci=10050)
+- [For referring to canvas rendering context concepts.](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D)
+- [For DOM manipulation](https://code.jquery.com/jquery-3.5.1.js)
+
 ## Roles ##
 
 **Arnav Sharma** 
